@@ -1,0 +1,351 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "type": "object",
+    "properties": {
+        "int": {
+            "type": "object",
+            "properties": {
+                "int0": {
+                    "type": "integer",
+                    "description": "检查range",
+                    "exclusiveMinimum": 1,
+                    "exclusiveMaximum": 1,
+                    "x-mock-test": {
+                        "repeat": 1,
+                        "assertExecSuccess": false
+                    }
+                },
+                "int1": {
+                    "type": "integer",
+                    "description": "测试min和max",
+                    "minimum": 10,
+                    "maximum": 11,
+                    "x-mock-test": {
+                        "repeat": 10,
+                        "itMode": 0
+                    }
+                },
+                "int2": {
+                    "type": "integer",
+                    "description": "测试exclusive",
+                    "minimum": 10,
+                    "exclusiveMinimum": 5,
+                    "maximum": 20,
+                    "exclusiveMaximum": 100
+                }
+            }
+        },
+        "num": {
+            "type": "object",
+            "properties": {
+                "num1": {
+                    "type": "number",
+                    "description": "测试min和max",
+                    "minimum": 1.2,
+                    "maximum": 10.5
+                },
+                "num1a": {
+                    "type": "number",
+                    "description": "测试min, no max",
+                    "minimum": 1.3
+                },
+                "num1b": {
+                    "type": "number",
+                    "description": "测试max, no min",
+                    "maximum": 10.2
+                },
+                "num2": {
+                    "type": "number",
+                    "description": "测试multipleOf > 浮点精度",
+                    "minimum": 1.1,
+                    "maximum": 10.11,
+                    "multipleOf": 2.3
+                },
+                "num3": {
+                    "type": "number",
+                    "description": "测试multipleOf > 整型精度",
+                    "minimum": 1.002,
+                    "maximum": 10.222,
+                    "multipleOf": 2
+                },
+                "num4": {
+                    "type": "number",
+                    "description": "测试multipleOf > 特殊浮点精度",
+                    "multipleOf": 3.14
+                },
+                "num5": {
+                    "type": "number",
+                    "description": "测试multipleOf > 特殊浮点精度 no max",
+                    "minimum": -20,
+                    "multipleOf": 3.14
+                },
+                "num6": {
+                    "type": "number",
+                    "description": "测试multipleOf > 特殊浮点精度 no min",
+                    "exclusiveMaximum": 6.28,
+                    "multipleOf": 3.14
+                }
+            }
+        },
+        "str": {
+            "type": "object",
+            "properties": {
+                "str1": {
+                    "type": "string",
+                    "description": "base"
+                },
+                "str2a": {
+                    "type": "string",
+                    "description": "len : min , no max",
+                    "minLength": 3
+                },
+                "str2b": {
+                    "type": "string",
+                    "description": "len : no min , max",
+                    "maxLength": 13
+                },
+                "str2c": {
+                    "type": "string",
+                    "description": "len : min && max",
+                    "minLength": 5,
+                    "maxLength": 13
+                },
+                "str3": {
+                    "type": "string",
+                    "description": "pattern",
+                    "pattern": "^(\\([0-9]{3}\\))?[0-9]{3}-[0-9]{4}$"
+                },
+                "str4": {
+                    "type": "string",
+                    "description": "Built-in formats : email",
+                    "format": "email"
+                },
+                "str5": {
+                    "type": "string",
+                    "description": "Built-in formats : date",
+                    "format": "date"
+                },
+                "str6": {
+                    "type": "string",
+                    "description": "Built-in formats : time",
+                    "format": "time"
+                },
+                "str7": {
+                    "type": "string",
+                    "description": "Built-in formats : date-time",
+                    "format": "date-time"
+                },
+                "str8": {
+                    "type": "string",
+                    "description": "Built-in formats : uri",
+                    "format": "uri"
+                }
+            }
+        },
+        "enums": {
+            "properties": {
+                "enum0": {
+                    "type": "string",
+                    "description": "清除无效enum后，校验是否空值",
+                    "enum": [
+                        1,
+                        true
+                    ],
+                    "x-mock-test": {
+                        "repeat": 1,
+                        "assertExecSuccess": false
+                    }
+                },
+                "enum1": {
+                    "type": "integer",
+                    "description": "清除无效enum",
+                    "enum": [
+                        "1",
+                        2,
+                        4
+                    ]
+                },
+                "enum2": {
+                    "type": [
+                        "integer",
+                        "string"
+                    ],
+                    "description": "清除无效enum 2",
+                    "enum": [
+                        1,
+                        2,
+                        "3",
+                        "555",
+                        true,
+                        [],
+                        {}
+                    ],
+                    "maximum": 2,
+                    "maxLength": 1,
+                    "x-mock-test": {
+                        "itMode": 2
+                    }
+                }
+            }
+        },
+        "const": {
+            "properties": {
+                "0": {
+                    "type": "integer",
+                    "description": "check with `schema` : ok",
+                    "const": 3
+                },
+                "1": {
+                    "type": "number",
+                    "description": "check with `schema` : conflict",
+                    "const": true,
+                    "x-mock-test": {
+                        "repeat": 1,
+                        "assertExecSuccess": false
+                    }
+                }
+            }
+        },
+        "examples": {
+            "properties": {
+                "1": {
+                    "type": "number",
+                    "description": "check : `type` is single ",
+                    "examples": [
+                        1,
+                        "2",
+                        3
+                    ]
+                },
+                "2": {
+                    "type": [
+                        "number",
+                        "integer"
+                    ],
+                    "description": "check : `type` is array",
+                    "examples": [
+                        1,
+                        "2",
+                        3,
+                        true,
+                        null
+                    ]
+                }
+            }
+        },
+        "object": {
+            "type": "object",
+            "properties": {
+                "1": {
+                    "type": "object",
+                    "description": "no : `properties` `patternProperties` `propertyNames` `additionalProperties`"
+                },
+                "2": {
+                    "type": "object",
+                    "description": "`minProperties` `maxProperties`",
+                    "minProperties": 3,
+                    "x-mock-test": {
+                        "repeat": 10,
+                        "assertExecSuccess": false
+                    }
+                },
+                "3": {
+                    "type": "object",
+                    "description": "size check",
+                    "minProperties": 10,
+                    "maxProperties": 0,
+                    "x-mock-test": {
+                        "repeat": 10,
+                        "assertExecSuccess": false
+                    }
+                },
+                "4": {
+                    "type": "object",
+                    "description": "`required` + `maxProperties`",
+                    "required": [
+                        "a",
+                        "b",
+                        "c"
+                    ],
+                    "maxProperties": 10
+                },
+                "5": {
+                    "type": "object",
+                    "description": "`required`.length conflict with `maxProperties`",
+                    "required": [
+                        "a",
+                        "b",
+                        "c"
+                    ],
+                    "maxProperties": 1,
+                    "x-mock-test": {
+                        "assertExecSuccess": false
+                    }
+                },
+                "6": {
+                    "type": "object",
+                    "description": "`patternProperties`",
+                    "propertyNames": {
+                       
+                    }
+                }
+            }
+        },
+        "test": {
+            "allOf": [
+                {
+                    "type": "number"
+                },
+                {
+                    "maximum": 20
+                },
+                {
+                    "allOf": [
+                        {
+                            "minimum": 5
+                        },
+                        {
+                            "examples": [
+                                7,
+                                8,
+                                9
+                            ]
+                        }
+                    ]
+                }
+            ]
+        },
+        "test2": {}
+    },
+    "definitions": {
+        "min": {
+            "$id": "#min",
+            "$ref": "#/definitions/max"
+        },
+        "max": {
+            "$ref": "./SeleniumTestRunnerSchema_0_0_1.json",
+            "maximum": 10
+        },
+        "enum1": {
+            "examples": [
+                1,
+                2,
+                3
+            ]
+        },
+        "tree": {
+            "type": "object",
+            "properties": {
+                "label": {
+                    "type": "string"
+                },
+                "children": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/tree"
+                    }
+                }
+            }
+        }
+    }
+}

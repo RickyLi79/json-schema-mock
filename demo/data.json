@@ -1,0 +1,13 @@
+{
+    "$schema": "../test/test.schema.json",
+    "object": {
+        "1": {
+            "a": 1
+        },
+        "6": {
+            "a": 1,
+            "b": 2,
+            "c":3
+        }
+    }
+}

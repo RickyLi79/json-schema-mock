@@ -1,0 +1,1196 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "version": "0.0.1",
+  "contact": {
+    "name": "Ricky",
+    "email": "382688672@qq.com",
+    "url": "https://gitee.com/RickyLi79"
+  },
+  "license": {
+    "name": "Apache 2.0",
+    "url": "https://www.apache.org/licenses/LICENSE-2.0.html"
+  },
+  "description": "SeleniumTestRunner文档规范。当前版本为0.0.1",
+  "required": [
+    "docType",
+    "planVersion",
+    "engineVersion",
+    "init",
+    "plan"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "$schema": {
+      "type": "string"
+    },
+    "author": {
+      "type": "object",
+      "description": "该文档的作者资料",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "email": {
+          "type": "string",
+          "format": "email"
+        },
+        "url": {
+          "type": "string",
+          "format": "url"
+        }
+      }
+    },
+    "docType": {
+      "type": "string",
+      "description": "声明当前用例描述是SeleniumTestRunner适用的",
+      "const": "SeleniumTestRunner-Plan-DDT",
+      "default": "SeleniumTestRunner-Plan-DDT"
+    },
+    "planVersion": {
+      "type": "string",
+      "description": "用例计划的规范版本",
+      "examples": [
+        "0.0.1",
+        "20210101a"
+      ]
+    },
+    "engineVersion": {
+      "const": "0.0.1",
+      "type": "string",
+      "description": "SeleniumTestRunner类库的适用版本"
+    },
+    "init": {
+      "type": "object",
+      "required": [
+        "browserType"
+      ],
+      "dependencies": {
+        "exitIfSetupErr": [
+          "setupSteps"
+        ]
+      },
+      "properties": {
+        "browserType": {
+          "type": "string",
+          "enum": [
+            "Chrome",
+            "Firefox",
+            "Ie",
+            "Edge"
+          ]
+        },
+        "browserOptions": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "examples": [
+              "#禁用图像#--disable-images",
+              "#设定UserAgent#--user-agent=\"xxx\"",
+              "#启动进入无痕模式#--incognito",
+              "#设置语言为简体中文#--lang=zh-CN",
+              "#启动就窗口最大化#--start-maximized",
+              "#浏览器不提供可视化页面#--headless",
+              "#禁用GPU加速#--disable-gpu",
+              "#页面加载策略#pageLoadStrategy=normal/none/eager"
+            ]
+          }
+        },
+        "browserImplicitly_wait": {
+          "type": "number",
+          "description": "隐性等待",
+          "format": "float",
+          "exclusiveMinimum": 0,
+          "maximum": 600,
+          "default": 10.0
+        },
+        "fakerLocal": {
+          "type": "string",
+          "description": "随机数产生器对应的语言",
+          "default": "zh_CN"
+        },
+        "screenshot": {
+          "type": "object",
+          "description": "截图策略",
+          "default": {
+            "before": 0,
+            "after": 2
+          },
+          "properties": {
+            "before": {
+              "type": "integer",
+              "title": "执行前截图",
+              "description": "0:永远不截图。该选项可加快执行速度\n  1:永远保存截图；\n  2:发生异常后再保存截图",
+              "default": 2,
+              "enum": [
+                0,
+                1,
+                2
+              ]
+            },
+            "after": {
+              "type": "integer",
+              "setup": "执行前截图",
+              "description": "0:永远不截图。该选项可加快执行速度\n  1:永远保存截图；\n  2:发生异常后再保存截图",
+              "default": 2,
+              "enum": [
+                0,
+                1,
+                2
+              ]
+            }
+          }
+        },
+        "setupSteps": {
+          "type": "array",
+          "default": [
+            {}
+          ],
+          "items": {
+            "$ref": "#/definitions/actions"
+          }
+        },
+        "exitIfSetupErr": {
+          "type": "boolean",
+          "default": false,
+          "description": "如果setup发生fail，是否终止整个suite"
+        }
+      }
+    },
+    "plan": {
+      "$ref": "#/definitions/plan"
+    }
+  },
+  "definitions": {
+    "plan": {
+      "type": "object",
+      "required": [
+        "features"
+      ],
+      "properties": {
+        "description": {
+          "type": "string"
+        },
+        "epic": {
+          "type": "string"
+        },
+        "features": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/feature"
+          }
+        }
+      }
+    },
+    "feature": {
+      "type": "object",
+      "description": "",
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "name of feature"
+        },
+        "stories": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/story"
+          }
+        }
+      }
+    },
+    "story": {
+      "type": "object",
+      "description": "",
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "name of story"
+        },
+        "titles": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/title"
+          }
+        }
+      }
+    },
+    "title": {
+      "type": "object",
+      "description": "",
+      "required": [
+        "name",
+        "steps"
+      ],
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "name of title"
+        },
+        "description": {
+          "type": "string",
+          "description": "@allure.description_html"
+        },
+        "tag": {
+          "type": "array",
+          "description": "@allure.tag",
+          "items": {
+            "type": "string"
+          },
+          "default": []
+        },
+        "severity": {
+          "type": "string",
+          "enum": [
+            "blocker",
+            "critical",
+            "normal",
+            "minor",
+            "trivial"
+          ],
+          "default": "normal",
+          "description": "根据测试用例的重要性划分测试用例等级，如果没指定等级，默认为normal级别\nblocker\t阻塞缺陷\ncritical\t严重缺陷\nnormal\t一般缺陷\nminor\t次要缺陷\ntrivial\t轻微缺陷"
+        },
+        "errSkip": {
+          "type": "integer",
+          "enum": [
+            0,
+            1,
+            2
+          ],
+          "default": 0,
+          "description": "如果发生fail，后续指令的执行策略：\n0 : 中断当前title。\n1 : 继续执行当前title后续指令。\n2 : 退出整个测试"
+        },
+        "steps": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/definitions/actions"
+          }
+        }
+      }
+    },
+    "step": {
+      "type": "object",
+      "description": "",
+      "required": [
+        "name",
+        "actions"
+      ],
+      "examples": [
+        {
+          "name": "<步骤说明>",
+          "actions": [
+            {}
+          ]
+        }
+      ],
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "name of step"
+        },
+        "actions": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/actions"
+          }
+        }
+      }
+    },
+    "actions": {
+      "oneOf": [
+        {
+          "$ref": "#/definitions/_sub_steps"
+        },
+        {
+          "$ref": "#/definitions/SYS_sleep"
+        },
+        {
+          "$ref": "#/definitions/ENGINE_setVar"
+        },
+        {
+          "$ref": "#/definitions/BROWSER_maximize_window"
+        },
+        {
+          "$ref": "#/definitions/BROWSER_set_window_size"
+        },
+        {
+          "$ref": "#/definitions/BROWSER_SET_implicitly_wait"
+        },
+        {
+          "$ref": "#/definitions/BROWSER_getUrl"
+        },
+        {
+          "$ref": "#/definitions/BROWSER_switch_to_window"
+        },
+        {
+          "$ref": "#/definitions/BROWSER_screenshot"
+        },
+        {
+          "$ref": "#/definitions/BROWSER_wait"
+        },
+        {
+          "$ref": "#/definitions/BROWSER_close"
+        },
+        {
+          "$ref": "#/definitions/WEB_sendKeys"
+        },
+        {
+          "$ref": "#/definitions/WEB_click"
+        },
+        {
+          "$ref": "#/definitions/WEB_assertAttr"
+        },
+        {
+          "$ref": "#/definitions/WEB_switch_to_frame"
+        },
+        {
+          "$ref": "#/definitions/WEB_switch_to_default_content"
+        },
+        {
+          "$ref": "#/definitions/WEB_select"
+        },
+        {
+          "$ref": "#/definitions/WEB_wait"
+        }
+      ]
+    },
+    "_sub_steps": {
+      "type": "object",
+      "required": [
+        "sub_steps"
+      ],
+      "properties": {
+        "sub_steps": {
+          "type": "object",
+          "examples": [
+            {
+              "step_name": "细分步骤",
+              "actions": [
+                {}
+              ]
+            }
+          ],
+          "allOf": [
+            {
+              "$ref": "#/definitions/_actionCommon"
+            },
+            {
+              "required": [
+                "actions"
+              ],
+              "properties": {
+                "actions": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/definitions/actions"
+                  }
+                }
+              }
+            }
+          ]
+        }
+      }
+    },
+    "SYS_sleep": {
+      "type": "object",
+      "required": [
+        "SYS_sleep"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "SYS_sleep": {
+          "type": "object",
+          "description": "强制等待n秒",
+          "default": {
+            "step_name": "强制等待：{{ARGS:time}}秒",
+            "time": 10.0
+          },
+          "allOf": [
+            {
+              "$ref": "#/definitions/_actionCommon"
+            },
+            {
+              "required": [
+                "time"
+              ],
+              "properties": {
+                "time": {
+                  "type": "number",
+                  "description": "单位：秒。 可小数",
+                  "default": 10.0,
+                  "exclusiveMinimum": 0,
+                  "maximum": 300
+                }
+              }
+            }
+          ]
+        }
+      }
+    },
+    "ENGINE_setVar": {
+      "type": "object",
+      "required": [
+        "ENGINE_setVar"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "ENGINE_setVar": {
+          "type": "object",
+          "examples": [
+            {
+              "step_name": "保存临时值: {{ARGS:name}} = {{ARGS:value}}",
+              "name": "myVar",
+              "value": "myValue"
+            }
+          ],
+          "allOf": [
+            {
+              "$ref": "#/definitions/_actionCommon"
+            },
+            {
+              "required": [
+                "name",
+                "value"
+              ],
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "description": "变量名"
+                },
+                "value": {
+                  "description": "变量值"
+                }
+              }
+            }
+          ]
+        }
+      }
+    },
+    "BROWSER_maximize_window": {
+      "type": "object",
+      "required": [
+        "BROWSER_maximize_window"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "BROWSER_maximize_window": {
+          "type": "object",
+          "description": "浏览器窗口最大化",
+          "default": {
+            "step_name": "浏览器窗口最大化"
+          },
+          "allOf": [
+            {
+              "$ref": "#/definitions/_actionCommon"
+            }
+          ]
+        }
+      }
+    },
+    "BROWSER_set_window_size": {
+      "type": "object",
+      "required": [
+        "BROWSER_set_window_size"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "BROWSER_set_window_size": {
+          "type": "object",
+          "description": "设置浏览器窗口大小",
+          "default": {
+            "step_name": "设定浏览器窗口大小: {{ARGS:width}}x{{ARGS:height}}",
+            "width": 1280,
+            "height": 800
+          },
+          "allOf": [
+            {
+              "$ref": "#/definitions/_actionCommon"
+            },
+            {
+              "required": [
+                "width",
+                "height"
+              ],
+              "properties": {
+                "width": {
+                  "type": "number",
+                  "description": "宽度",
+                  "default": 1280,
+                  "exclusiveMinimum": 0
+                },
+                "height": {
+                  "type": "number",
+                  "description": "高度",
+                  "default": 800,
+                  "exclusiveMinimum": 0
+                }
+              }
+            }
+          ]
+        }
+      }
+    },
+    "BROWSER_SET_implicitly_wait": {
+      "type": "object",
+      "required": [
+        "BROWSER_SET_implicitly_wait"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "BROWSER_SET_implicitly_wait": {
+          "type": "object",
+          "description": "设置隐性等待时间",
+          "default": {
+            "step_name": "设置隐性等待时间：{{ARGS:time}}秒",
+            "time": 10.0
+          },
+          "additionalProperties": false,
+          "allOf": [
+            {
+              "$ref": "#/definitions/_actionCommon"
+            },
+            {
+              "required": [
+                "time"
+              ],
+              "properties": {
+                "time": {
+                  "type": "number",
+                  "description": "单位：秒。 可小数",
+                  "default": 10.0,
+                  "exclusiveMinimum": 0,
+                  "maximum": 300
+                }
+              }
+            }
+          ]
+        }
+      }
+    },
+    "BROWSER_switch_to_window": {
+      "type": "object",
+      "required": [
+        "BROWSER_switch_to_window"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "BROWSER_switch_to_window": {
+          "type": "object",
+          "description": "转换到最指定的窗口",
+          "examples": [
+            {
+              "step_name": "转换到最指定的窗口 idx = {{ARGS:idx}}",
+              "idx": -1
+            }
+          ],
+          "required": [
+            "step_name",
+            "idx"
+          ],
+          "properties": {
+            "step_name": {
+              "type": "string",
+              "description": "step的名字"
+            },
+            "memo": {
+              "type": "string",
+              "description": "该描述在ENGINE中没有任何意义。纯粹用于DOC的注释"
+            },
+            "idx": {
+              "type": "integer",
+              "description": "窗口的顺序，-1为最新打开的窗口",
+              "default": -1
+            }
+          }
+        }
+      }
+    },
+    "BROWSER_getUrl": {
+      "type": "object",
+      "required": [
+        "BROWSER_getUrl"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "BROWSER_getUrl": {
+          "type": "object",
+          "examples": [
+            {
+              "step_name": "前往页面 url = {{ARGS:url}}",
+              "url": "http://baidu.com"
+            }
+          ],
+          "allOf": [
+            {
+              "$ref": "#/definitions/_actionCommon"
+            },
+            {
+              "required": [
+                "url"
+              ],
+              "properties": {
+                "url": {
+                  "type": "string",
+                  "description": "要打开的网址",
+                  "examples": [
+                    "http://baidu.com"
+                  ]
+                },
+                "force": {
+                  "type": "boolean",
+                  "description": "如果当前已经是指定URL，是否强制刷新。 默认false",
+                  "default": false
+                }
+              }
+            }
+          ]
+        }
+      }
+    },
+    "BROWSER_wait": {
+      "type": "object",
+      "required": [
+        "BROWSER_wait"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "BROWSER_wait": {
+          "type": "object",
+          "examples": [
+            {
+              "step_name": "等待<?>",
+              "method": "url_changes",
+              "args": []
+            }
+          ],
+          "allOf": [
+            {
+              "$ref": "#/definitions/_actionCommon"
+            },
+            {
+              "required": ["method", "args"],
+              "properties": {
+                "timeout": {
+                  "type": "number",
+                  "format": "float",
+                  "description": "最大等待时间"
+                },
+                "until": {
+                  "type": "string",
+                  "default": "until",
+                  "enum": [
+                    "until",
+                    "not_until"
+                  ],
+                  "description": "是否采用until"
+                },
+                "frequency": {
+                  "type": "number",
+                  "default": 0.5,
+                  "description": "检测频率，默认每0.5秒检测一次"
+                },
+                "method": {
+                  "type": "string",
+                  "description": "等待的方法",
+                  "examples": [
+                    "title_is",
+                    "title_contains",
+                    "new_window_is_opened",
+                    "alert_is_present",
+                    "url_to_be",
+                    "url_changes",
+                    "current_url_changes"
+                  ]
+                },
+                "args": {
+                  "type": "array"
+                }
+              }
+            }
+          ]
+        }
+      }
+    },
+    "BROWSER_screenshot": {
+      "type": "object",
+      "required": [
+        "BROWSER_screenshot"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "BROWSER_screenshot": {
+          "type": "object",
+          "examples": [
+            {
+              "step_name": "窗口截图"
+            }
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "step_name": {
+              "type": "string",
+              "description": "step的名字"
+            }
+          }
+        }
+      }
+    },
+    "BROWSER_close": {
+      "type": "object",
+      "required": [
+        "BROWSER_close"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "BROWSER_close": {
+          "type": "object",
+          "examples": [
+            {
+              "step_name": "关闭当前窗口"
+            }
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "step_name": {
+              "type": "string",
+              "description": "step的名字"
+            }
+          }
+        }
+      }
+    },
+    "WEB_wait": {
+      "type": "object",
+      "required": [
+        "WEB_wait"
+      ],
+      "properties": {
+        "WEB_wait": {
+          "type": "object",
+          "required": [
+            "waitOptions"
+          ],
+          "examples": [
+            {
+              "step_name": "等待元素",
+              "by": "xpath",
+              "path": "<path>"
+            }
+          ],
+          "allOf": [
+            {
+              "$ref": "#/definitions/_elemLocator"
+            },
+            {
+              "$ref": "#/definitions/_actionCommon"
+            }
+          ]
+        }
+      }
+    },
+    "WEB_sendKeys": {
+      "type": "object",
+      "required": [
+        "WEB_sendKeys"
+      ],
+      "properties": {
+        "WEB_sendKeys": {
+          "type": "object",
+          "examples": [
+            {
+              "step_name": "对元素输入文字: {{ARGS:value}}",
+              "by": "xpath",
+              "path": "<path>",
+              "value": "<value string>",
+              "clear": true
+            }
+          ],
+          "allOf": [
+            {
+              "$ref": "#/definitions/_elemLocator"
+            },
+            {
+              "$ref": "#/definitions/_actionCommon"
+            },
+            {
+              "required": [
+                "value"
+              ],
+              "properties": {
+                "value": {
+                  "type": "string",
+                  "description": "要输入的文字",
+                  "examples": [
+                    "<要输入的文字>"
+                  ]
+                },
+                "clear": {
+                  "type": "boolean",
+                  "description": "输入文字前是否清空已有内容",
+                  "default": false
+                }
+              }
+            }
+          ]
+        }
+      }
+    },
+    "WEB_click": {
+      "type": "object",
+      "required": [
+        "WEB_click"
+      ],
+      "properties": {
+        "WEB_click": {
+          "type": "object",
+          "examples": [
+            {
+              "step_name": "单击元素",
+              "by": "xpath",
+              "path": "<path>"
+            }
+          ],
+          "allOf": [
+            {
+              "$ref": "#/definitions/_elemLocator"
+            },
+            {
+              "$ref": "#/definitions/_actionCommon"
+            }
+          ]
+        }
+      }
+    },
+    "WEB_select": {
+      "type": "object",
+      "required": [
+        "WEB_select"
+      ],
+      "properties": {
+        "WEB_select": {
+          "type": "object",
+          "examples": [
+            {
+              "step_name": "从下拉select中选择指定index的元素",
+              "by": "xpath",
+              "path": "<path>",
+              "selectBy": "index",
+              "selectContent": "1"
+            }
+          ],
+          "allOf": [
+            {
+              "$ref": "#/definitions/_elemLocator"
+            },
+            {
+              "$ref": "#/definitions/_actionCommon"
+            },
+            {
+              "required": [
+                "selectBy",
+                "selectContent"
+              ],
+              "properties": {
+                "selectBy": {
+                  "type": "string",
+                  "description": "选择模式",
+                  "enum": [
+                    "index",
+                    "value",
+                    "visible_text"
+                  ]
+                },
+                "selectContent": {
+                  "type": "string",
+                  "description": "选择内容"
+                }
+              }
+            }
+          ]
+        }
+      }
+    },
+    "WEB_assertAttr": {
+      "type": "object",
+      "required": [
+        "WEB_assertAttr"
+      ],
+      "properties": {
+        "WEB_assertAttr": {
+          "type": "object",
+          "description": "断言元素的属性值内容与包含给定值",
+          "examples": [
+            {
+              "step_name": "断言元素的{{ARGS:attribute}}属性内容与等于：{{ARGS:value}}",
+              "by": "xpath",
+              "path": "<path>",
+              "attribute": "textContent",
+              "value": "<value>"
+            }
+          ],
+          "allOf": [
+            {
+              "$ref": "#/definitions/_elemLocator"
+            },
+            {
+              "$ref": "#/definitions/_actionCommon"
+            },
+            {
+              "required": [
+                "attribute",
+                "value"
+              ],
+              "properties": {
+                "attribute": {
+                  "type": "string",
+                  "description": "元素的属性名",
+                  "examples": [
+                    "value",
+                    "textContent"
+                  ]
+                },
+                "value": {
+                  "type": "string",
+                  "description": "断言要相等的文字",
+                  "examples": [
+                    "<断言要相等的文字>"
+                  ]
+                }
+              }
+            }
+          ]
+        }
+      }
+    },
+    "WEB_switch_to_frame": {
+      "type": "object",
+      "required": [
+        "WEB_switch_to_frame"
+      ],
+      "properties": {
+        "WEB_switch_to_frame": {
+          "type": "object",
+          "examples": [
+            {
+              "step_name": "进入iframe",
+              "by": "xpath",
+              "path": "<path>"
+            }
+          ],
+          "allOf": [
+            {
+              "$ref": "#/definitions/_elemLocator"
+            },
+            {
+              "$ref": "#/definitions/_actionCommon"
+            }
+          ]
+        }
+      }
+    },
+    "WEB_switch_to_default_content": {
+      "type": "object",
+      "required": [
+        "WEB_switch_to_default_content"
+      ],
+      "properties": {
+        "WEB_switch_to_default_content": {
+          "type": "object",
+          "examples": [
+            {
+              "step_name": "返回最顶层frame"
+            }
+          ],
+          "allOf": [
+            {
+              "$ref": "#/definitions/_actionCommon"
+            }
+          ]
+        }
+      }
+    },
+    "_elemLocator": {
+      "required": [
+        "path"
+      ],
+      "properties": {
+        "by": {
+          "type": "string",
+          "description": "定位方式",
+          "default": "xpath",
+          "enum": [
+            "id",
+            "xpath",
+            "link text",
+            "partial link text",
+            "name",
+            "tag name",
+            "class name",
+            "css selector"
+          ]
+        },
+        "path": {
+          "type": "string",
+          "description": "定位路径"
+        },
+        "waitOptions": {
+          "$ref": "#/definitions/_waitOptions"
+        }
+      }
+    },
+    "_waitOptions": {
+      "type": "object",
+      "required": [
+        "method"
+      ],
+      "examples": [
+        {
+          "method": "presence_of_element_located"
+        },
+        {
+          "timeout": 10.0,
+          "until": true,
+          "frequency": 0.5,
+          "method": "presence_of_element_located"
+        }
+      ],
+      "properties": {
+        "timeout": {
+          "type": "number",
+          "format": "float",
+          "description": "最大等待时间"
+        },
+        "until": {
+          "type": "string",
+          "default": "until",
+          "enum": [
+            "until",
+            "not_until"
+          ],
+          "description": "是否采用until"
+        },
+        "frequency": {
+          "type": "number",
+          "default": 0.5,
+          "description": "检测频率，默认每0.5秒检测一次"
+        },
+        "method": {
+          "type": "string",
+          "description": "检测逻辑",
+          "enum": [
+            "element_to_be_clickable",
+            "presence_of_element_located",
+            "visibility_of_element_located",
+            "invisibility_of_element_located"
+          ]
+        }
+      }
+    },
+    "_actionCommon": {
+      "description": "每个action都通用的选项",
+      "required": [
+        "step_name"
+      ],
+      "properties": {
+        "step_name": {
+          "type": "string",
+          "description": "step的名字"
+        },
+        "memo": {
+          "type": "string",
+          "description": "该描述在ENGINE中没有任何意义。纯粹用于DOC的注释"
+        },
+        "_options": {
+          "type": "object",
+          "allOf": [
+            {
+              "$ref": "#/definitions/_screenshotOption"
+            },
+            {
+              "$ref": "#/definitions/_repeatOption"
+            },
+            {
+              "$ref": "#/definitions/_assertErrorOption"
+            },
+            {
+              "$ref": "#/definitions/_errSkipOption"
+            }
+          ]
+        }
+      }
+    },
+    "_screenshotOption": {
+      "type": "object",
+      "properties": {
+        "screenshot": {
+          "type": "object",
+          "description": "截图策略，如果省略则按init中的策略执行；\n如果给出则本action覆盖init中的策略",
+          "default": {
+            "before": 2,
+            "after": 2
+          },
+          "properties": {
+            "before": {
+              "type": "integer",
+              "title": "执行前截图",
+              "description": "0: 永远不截图；\n  1: 永远保存截图；\n  2: 发生异常后再保存截图",
+              "enum": [
+                0,
+                1,
+                2
+              ]
+            },
+            "after": {
+              "type": "integer",
+              "title": "执行前截图",
+              "description": "0: 永远不截图；\n  1: 永远保存截图；\n  2: 发生异常后再保存截图",
+              "enum": [
+                0,
+                1,
+                2
+              ]
+            }
+          }
+        }
+      }
+    },
+    "_repeatOption": {
+      "type": "object",
+      "properties": {
+        "repeat": {
+          "type": "integer",
+          "description": "action的重复执行次数",
+          "exclusiveMinimum": 0,
+          "default": 1
+        }
+      }
+    },
+    "_assertErrorOption": {
+      "type": "object",
+      "properties": {
+        "assertError": {
+          "type": "boolean",
+          "default": true,
+          "description": "预期是否发生异常\ntrue : 预期会执行失败\nfalse : 预期会执行成功"
+        }
+      }
+    },
+    "_errSkipOption": {
+      "type": "object",
+      "properties": {
+        "errSkip": {
+          "type": "integer",
+          "enum": [
+            0,
+            1,
+            2
+          ],
+          "default": 0,
+          "description": "如果发生fail，后续指令的执行策略：\n0 : 中断当前title。\n1 : 继续执行当前title后续指令。\n2 : 退出整个测试"
+        }
+      }
+    }
+  }
+}
