@@ -2,7 +2,7 @@
 
 # JSON Schema Mock
 
-根据给定的[JSON Schema draft 7](http://json-schema.org/understanding-json-schema/index.html)生成json。
+根据给定的[JSON Schema draft 7](http://json-schema.org/understanding-json-schema/index.html)生成json
 
 ## 特色
 
