@@ -51,7 +51,7 @@ export class SchemaMock {
         this._analysisSchema = _.cloneDeep(orgSchema);
     }
 
-    static mockNode(orgSchema: SchemaExt, options: Partial<MockOptions> = {}): any {
+    static mock(orgSchema: SchemaExt, options: Partial<MockOptions> = {}): any {
         let schema = analysisSchema(orgSchema, false);
         let result: any
 
@@ -153,7 +153,7 @@ export class SchemaMock {
                             iItem = Random.pick(RandomTypeArr)();
                         }
                         else {
-                            iItem = this.mockNode(iSchema);
+                            iItem = this.mock(iSchema);
                         }
 
                         //#endregion
@@ -311,7 +311,7 @@ export class SchemaMock {
                                         continue;
                                     }
                                     else if (depSchemas[iKey] !== undefined) {
-                                        const tmp = this.mockNode(depSchemas[iKey], { ...options, requiredOnly: true });
+                                        const tmp = this.mock(depSchemas[iKey], { ...options, requiredOnly: true });
                                         Object.assign(obj, tmp);
                                         counter += Object.keys(tmp).length;
                                         break;
@@ -320,14 +320,14 @@ export class SchemaMock {
                                         // }
                                     }
                                     else if (properties[iKey] !== undefined) {
-                                        value = this.mockNode(properties[iKey], options);
+                                        value = this.mock(properties[iKey], options);
                                     }
                                     else {
                                         if (allowPattern && keyPatterns !== undefined) {
                                             for (let j in schema.patternProperties) {
                                                 const jReg = tmpReg[j] ?? (tmpReg[j] = new RegExp(j));
                                                 if (jReg.test(iKey)) {
-                                                    value = this.mockNode(schema.patternProperties![j], _options);
+                                                    value = this.mock(schema.patternProperties![j], _options);
                                                     break
                                                 }
                                             }
@@ -335,7 +335,7 @@ export class SchemaMock {
 
                                         if (value === undefined) {
                                             if (ArrayUtil.isObjectNotArray(schema.additionalProperties)) {
-                                                value = this.mockNode(<SchemaExt>schema.additionalProperties, options);
+                                                value = this.mock(<SchemaExt>schema.additionalProperties, options);
                                             }
                                             else if (schema.additionalProperties ?? true) {
                                                 value = Random.pick(arr)();
