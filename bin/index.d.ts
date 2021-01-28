@@ -8,10 +8,11 @@ export declare class SchemaMock {
     get analysisSchema(): SchemaExt;
     protected _analysisSchema: SchemaExt;
     protected constructor(orgSchema: SchemaExt);
-    static mockNode(orgSchema: SchemaExt, options?: Partial<MockOptions>): any;
+    static mock(orgSchema: SchemaExt, options?: Partial<MockOptions>): any;
     static parser(file: string): Promise<SchemaMock>;
 }
 export declare type MockOptions = {
     skipMockAtts: string[];
     requiredOnly: boolean;
 };
+export declare type Schema = SchemaExt;

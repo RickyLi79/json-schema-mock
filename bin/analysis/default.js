@@ -400,6 +400,7 @@ function analysisAnyOf(schema, level, keysToComb, addMark = true, force = false)
         else {
             let anyOf_bak = schema.anyOf;
             delete schema.anyOf;
+            const imposableSchemas = [];
             let itemsIdxArr = [];
             for (let i = anyOf_bak.length - 1; i > -1; i--) {
                 itemsIdxArr.unshift(i);
@@ -421,8 +422,16 @@ function analysisAnyOf(schema, level, keysToComb, addMark = true, force = false)
                     break;
                 }
                 catch (err) {
+                    imposableSchemas.push(idx);
                 }
             }
+            /*
+                        for (let i = anyOf_bak.length - 1; i > -1; i--) {
+                            if (imposableSchemas.includes(i)) {
+                                anyOf_bak.pop();
+                            }
+                        }
+             */
         }
     }
     if (addMark)

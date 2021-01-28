@@ -70,7 +70,7 @@ class SchemaMock {
     get analysisSchema() {
         return this._analysisSchema;
     }
-    static mockNode(orgSchema, options = {}) {
+    static mock(orgSchema, options = {}) {
         var _a, _b, _c, _d, _e, _f, _g;
         let schema = default_1.analysisSchema(orgSchema, false);
         let result;
@@ -159,7 +159,7 @@ class SchemaMock {
                             iItem = mockjs_1.Random.pick(object_1.RandomTypeArr)();
                         }
                         else {
-                            iItem = this.mockNode(iSchema);
+                            iItem = this.mock(iSchema);
                         }
                         //#endregion
                         if (uniqueItems) {
@@ -310,7 +310,7 @@ class SchemaMock {
                                         continue;
                                     }
                                     else if (depSchemas[iKey] !== undefined) {
-                                        const tmp = this.mockNode(depSchemas[iKey], Object.assign(Object.assign({}, options), { requiredOnly: true }));
+                                        const tmp = this.mock(depSchemas[iKey], Object.assign(Object.assign({}, options), { requiredOnly: true }));
                                         Object.assign(obj, tmp);
                                         counter += Object.keys(tmp).length;
                                         break;
@@ -319,21 +319,21 @@ class SchemaMock {
                                         // }
                                     }
                                     else if (properties[iKey] !== undefined) {
-                                        value = this.mockNode(properties[iKey], options);
+                                        value = this.mock(properties[iKey], options);
                                     }
                                     else {
                                         if (allowPattern && keyPatterns !== undefined) {
                                             for (let j in schema.patternProperties) {
                                                 const jReg = (_f = tmpReg[j]) !== null && _f !== void 0 ? _f : (tmpReg[j] = new RegExp(j));
                                                 if (jReg.test(iKey)) {
-                                                    value = this.mockNode(schema.patternProperties[j], _options);
+                                                    value = this.mock(schema.patternProperties[j], _options);
                                                     break;
                                                 }
                                             }
                                         }
                                         if (value === undefined) {
                                             if (ArrayUtil_1.ArrayUtil.isObjectNotArray(schema.additionalProperties)) {
-                                                value = this.mockNode(schema.additionalProperties, options);
+                                                value = this.mock(schema.additionalProperties, options);
                                             }
                                             else if ((_g = schema.additionalProperties) !== null && _g !== void 0 ? _g : true) {
                                                 value = mockjs_1.Random.pick(arr)();
