@@ -1,4 +1,4 @@
-import { SchemaExt } from "../src/types";
+import { SchemaExt } from "../lib/types";
 import { NodeTestStore } from "./NodeTestStore";
 
 async function start() {
