@@ -1,113 +1,17 @@
-- Generic keywords
-    - [x] `const`
-    - [x] `enum`
-    - [ ] `examples` ignored for mock
+简体中文 | [English](./README.en-US.md)
 
-- Type-specific keywords
-    - [x] no `type` => pick one from [ `string`, `boolean`, `integer`, `number`]
-    - [x] `null`
-    - [x] `integer`
-        - [x] `minimum`
-        - [x] `maximum`
-        - [x] `exclusiveMinimum`
-        - [x] `exclusiveMaximum`
-        - [x] range check
-    - [x] `number`
-        - [x] `minimum`
-        - [x] `maximum`
-        - [x] `exclusiveMinimum`
-        - [x] `exclusiveMaximum`
-        - [x] `multipleOf`
-            - [x] `multipleOf` is `integer`
-            - [x] `multipleOf` is `float`
-        - [x] range check
-    - [x] `boolean`
-    - [x] `string`
-        - [x] base
-            - default `minLength`===0
-            - `maxLength = maxLength ?? minLength+10`
-        - [ ] `patten`
-            - [x] without `format`
-            - [ ] with `format` will probably conflict
-            - [ ] with `minLength` or `maxLength` will probably conflict
-        - [ ] `format`
-            - [ ] with `patten` will probably conflict
-            - [ ] with `minLength` or `maxLength` will probably conflict
-            - Built-in formats
-                - [x] `email`
-                - [x] `date`
-                - [x] `time`
-                - [x] `date-time`
-                - [x] `uri`
-            - extras
-                - `url` same as `uri`
-                - `protocol` => http'、'ftp' ...
-                - `domain` => "kozfnb.org"
-                - `ip` => "34.206.109.169"
-                - `color` => "#3538B2"
-                - `zip` => "908812"
-                - `guid` => "662C63B4-FD43-66F4-3328-C54E3FF0D56E"
-    - [x] `object`
-        - [x] no : `required`/`properties`/`patternProperties`/`propertyNames`/`additionalProperties`
-        - [x] `minProperties`/`maxProperties`
-        - [x] `minProperties` + `maxProperties` conflict check
-        - [x] `required` + `maxProperties`
-        - [x] `required` + `patternProperties`
-        - [x] `required`.length conflict with `maxProperties`
-        - [x] `required` + `properties` + `additionalProperties`
-        - [x] `required` + `properties` + `propertyNames.enum`
-        - [x] `required` + `properties` + `propertyNames.enum` + `propertyNames.pattern`
-        - [x] `required` + `properties` + `propertyNames.enum` + `propertyNames.pattern` + `propertyNames.const`
-        - [x] `required` + `properties` + `propertyNames.pattern` + `patternProperties`
-        - [x] `properties` + `dependencies` Property dependencies : a -> b
-        - [x] `properties` + `dependencies` Property dependencies : a <-> b
-        - [x] `properties` + `dependencies` Property dependencies : a -> b -> c -> others
-        - [x] `properties` + `dependencies` Schema dependencies : a -> b"
-    - [x] `array`
-        - [x] `minItems`
-        - [x] `minItems`+`maxItems` conflict check
-        - [x] `items` List validation, `uniqueItems`===`false`
-        - [x] `items` List validation, `uniqueItems`===`true`
-        - [x] `items` Tuple validation, `uniqueItems`===`false`
-        - [x] `items` Tuple validation, `uniqueItems`===`true`, `additionalItems`===`false`
-        - [x] `items` Tuple validation, `uniqueItems`===`true`, `additionalItems` with `format`===`email`
-        - [x] `contains`
-        - `uniqueItems` jsonschema(v1.4.0) jsonschema.valid()  `{}`==`[]`==`null`
+# JSON Schema Mock
 
-- Combining schemas
-    - [ ] `allOf`
-        - [x] `type`
-        - [x] `const`
-        - [x] `enum`
-        - [x] range / size
-            - [x] `number` / `integer` : `minimum` `maximum` `exclusiveMinimum` `exclusiveMaximum`
-            - [x] `string` : `minLength` `maxLength`
-            - [x] `array` : `minItems` `maxItems`
-            - [x] `object` : `minProperties` `maxProperties`
-        - [x] `number` `multipleOf`
-        - [x] `string`
-            - [ ] `pattern` : jion all the `pattern` by "(.+)?"
-            - [x] `format`
-        - [x] `array`
-            - [x] `uniqueItems`
-            - [x] `contains`
-                - jsonschema(v1.4.0) jsonschema.valid() has bug with `contains`.  [ISSUE](https://github.com/tdegrunt/jsonschema/issues/323)
-                - `contains` has chance conflict with `maxItems`
-            - [ ] `additionalItems`
-                - use first aviable `additionalItems` in shcema combining tree
-                - jsonschema(v1.4.0) jsonschema.valid() do not check `additionalItems` in `allOf`
-        - [ ]  `object`
-            - [x] `required`
-            - [x] `properties`
-            - [x] `patternProperties`
-            - [x] `propertyNames.const`
-            - [x] `propertyNames.enum`
-            - [x] `propertyNames.pattern`
-            - [x] `dependencies`
-            - [ ] `additionalProperties`  ***validation bug***
-    - [x] `anyOf`
-        - random pick one subschema to mock
-    - [ ] `oneOf`
-        - random pick one subschema to mock
-        - ***BUG*** do not check conflict whit other subschemas
-    - [ ] `not` do not support
+## 功能描述
+
+根据给定的[JSON Schema draft 7](http://json-schema.org/understanding-json-schema/index.html)生成json。
+
+生成支持的完整列表参看[Tested List](./TestedList.md)
+
+## 安装
+
+## 使用方法
+
+
+
+

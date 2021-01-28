@@ -6,11 +6,27 @@
   "scripts": {
     "test": "mocha --reporter spec --timeout 10000 --colors --require ts-node/register test/**/*.test.ts",
     "mocha:debug": "mocha --reporter spec --timeout 10000 --colors --require ts-node/register test/debug.ts",
-    "build":"tsc"
+    "build": "tsc"
   },
-  "keywords": ["json schema","mock","faker"],
-  "author": "",
-  "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "https://gitee.com/RickyLi79/json-schema-mock.git"
+  },
+  "keywords": [
+    "json",
+    "jsonschema",
+    "mock",
+    "fake",
+    "generate",
+    "random"
+  ],
+  "author": "Ricky <382688672@qq.com>",
+  "licenses": [
+    {
+      "type": "MIT",
+      "url": "https://github.com/nuysoft/Mock/blob/master/LICENSE"
+    }
+  ],
   "dependencies": {
     "jsonschema": "^1.4.0",
     "lodash": "^4.17.20",
