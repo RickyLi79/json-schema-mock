@@ -559,3 +559,4 @@ export type MockOptions = {
     requiredOnly: boolean;
 }
 
+export type Schema = SchemaExt
