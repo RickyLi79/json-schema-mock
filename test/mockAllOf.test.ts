@@ -4,8 +4,8 @@ import { NodeTestStore } from "./NodeTestStore";
 async function start() {
 
     const ms = await NodeTestStore.getSchemaMock();
-    describe("mock `const`", async () => {
-        let node: { [name: string]: SchemaExt } = ms.schema.properties?.const.properties!
+    describe("mock `allOf`", async () => {
+        let node: { [name: string]: SchemaExt } = ms.schema.properties?.AllOf.properties!
         NodeTestStore.ltEach(node);
     });
 }

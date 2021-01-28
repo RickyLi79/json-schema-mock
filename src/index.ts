@@ -1,12 +1,19 @@
 import fs from "fs";
 import _ from "lodash";
+import jsonschema from "jsonschema";
 import Mock, { Random } from "mockjs";
 import path from "path";
-import { analysisSchema } from "./analysis/default";
+import { analysisArray } from "./analysis/array";
+import { analysisSchema, CombindPrefix } from "./analysis/default";
 import { analysisInteger } from "./analysis/integer";
 import { analysisNumber } from "./analysis/number";
+import { analysisObject, RandomTypeArr, TypesToRandom } from "./analysis/object";
 import { analysisString } from "./analysis/string";
 import { SchemaExt } from "./types";
+import { ArrayUtil } from "./utils/ArrayUtil";
+import { RegExpUtil } from "./utils/RegExpUtil";
+import mockjs from "mockjs";
+
 
 Random.tld = function () { // Top Level Domain
     return this.pick(
@@ -51,68 +58,327 @@ export class SchemaMock {
         // return result
     }
 
+
     static mockNode(orgSchema: SchemaExt, options: Partial<MockOptions> = {}): any {
         let schema = analysisSchema(orgSchema, false);
         let result: any
+
+        if (schema.const !== undefined) {
+            result = schema.const;
+            return result;
+        }
+
+        if (schema["x-mock-tpl"] !== undefined) {
+            const re = mockjs.mock({ ROOT: schema["x-mock-tpl"] });
+            return re.ROOT;
+        }
+
         if (schema.enum !== undefined) {
-            if (schema.enum.length === 1) {
-                result = schema.enum[0];
+            let enumIdxArr: number[] = [];
+            for (let i = schema.enum.length-1; i > -1; i--) {
+                enumIdxArr.unshift(i);
             }
-            else {
-                result = Random.pick(schema.enum)
+            enumIdxArr = Random.shuffle(enumIdxArr);
+            while (true) {
+                let idx = enumIdxArr.pop();
+                if (idx === undefined) {
+                    throw new SyntaxError("all items in `enum` invalid");
+                }
+
+                try {
+                    result = schema.enum[idx];
+                    jsonschema.validate(schema.enum[idx], schema, { throwFirst: true });
+                    break;
+                }
+                catch (err) {
+                }
             }
             return result;
         }
 
         const _options: MockOptions = Object.assign(
             {
-                skipMockAtts: []
+                skipMockAtts: [], requiredOnly: false
             }, options);
 
-        const type = _.isArray(schema) ? _.first(schema.type) : schema.type;
+        const type = Array.isArray(schema.type) ? Random.pick(schema.type) : schema.type ?? Random.pick(TypesToRandom);
+
 
         switch (type) {
+            case undefined:
+                result = Random.pick(RandomTypeArr)();
+                break;
+
             case "array":
+                {
+                    let arr: any[] = [];
+                    let { min, max, uniqueItems, itemTuple, items, allowAdditional, additionalItems, containsArr } = analysisArray(schema);
+                    const maxCounter = Random.integer(min, max);
+                    let containsAllDone: boolean = containsArr.length === 0;
+                    let containsDone: true[] = [];
+                    for (let i = 1; i <= maxCounter || !containsAllDone; i++) {
+
+                        //#region 
+                        // let iItem = Random.pick(RandomTypeArr)();
+                        let iSchema: SchemaExt | undefined;
+
+                        if (itemTuple) {
+                            iSchema = items[i - 1];
+                            if (iSchema === undefined) {
+                                if (!containsAllDone) {
+                                    for (let j in containsArr) {
+                                        if (!containsDone[j]) {
+                                            iSchema = containsArr[j];
+                                            break;
+                                        }
+                                    }
+                                } else {
+                                    iSchema = additionalItems;
+
+                                }
+                            }
+
+                        }
+                        else {
+                            iSchema = items[0];
+                            if (!containsAllDone) {
+                                for (let j in containsArr) {
+                                    if (!containsDone[j]) {
+                                        iSchema = containsArr[j];
+                                        break;
+                                    }
+                                }
+                            } else {
+                                iSchema = items[0];
+                            }
+                        }
+
+                        if (iSchema === undefined && !allowAdditional)
+                            break;
+
+                        let iItem: any;
+                        if (iSchema === undefined) {
+                            iItem = Random.pick(RandomTypeArr)();
+                        }
+                        else {
+                            iItem = this.mockNode(iSchema);
+                        }
+
+                        //#endregion
+                        if (uniqueItems) {
+                            let toBreak = false;
+                            let toContinue = false;
+                            let arrLen = arr.length;
+                            for (let jItem of arr) {
+                                if (_.isEqual(iItem, jItem)) {
+                                    if (arrLen >= min) {
+                                        toBreak = true;
+                                        break
+                                    }
+                                    i--;
+                                    toContinue = true;
+                                    break;
+                                }
+                            }
+                            if (toBreak)
+                                break;
+                            if (toContinue)
+                                continue;
+                        }
+
+                        if (!containsAllDone) {
+                            let remain = containsArr.length;
+                            for (let j in containsArr) {
+                                if (!containsDone[j]) {
+                                    const validResult = jsonschema.validate(iItem, containsArr[j]);
+                                    if (validResult.errors.length === 0) {
+                                        containsDone[j] = true;
+                                        remain--;
+                                    }
+                                } else {
+                                    remain--;
+                                }
+                            }
+                            if (remain === 0) {
+                                containsAllDone = true;
+                            }
+                        }
+
+                        arr.push(iItem);
+                    }
+                    result = arr;
+                }
                 break;
 
             case "object":
                 {
                     let obj: { [key: string]: any } = {};
-                    let min = schema.minProperties ?? 0;
-                    let max = schema.maxProperties ?? min + 10;
-                    let required = schema.required ?? [];
-                    min = Math.max(min, required.length);
-                    if (max < min) {
-                        throw SyntaxError(`size range setting ERROR`)
+
+                    let { min, max, required, requiredLen, allowKeys, allowAdditional, keyPatterns, allowPattern, depkeys, depSchemas } = analysisObject(schema);
+
+                    if (_options.requiredOnly) {
+                        min = max = requiredLen;
                     }
                     if (
                         schema.properties === undefined
                         && schema.patternProperties === undefined
                         && (schema.propertyNames === undefined || schema.propertyNames === true)
-                        && typeof schema.additionalProperties !== 'object'
+                        && !ArrayUtil.isObjectNotArray(schema.additionalProperties)
+                        && schema.dependencies === undefined
                     ) {
-                        const maxCounter = Random.integer(min, max);
-                        const arr = [() => Random.string(), () => Random.boolean(), () => Random.integer(), () => Random.float(), () => Random.datetime()];
+                        const maxCounter = Random.integer(min, max ?? min + 5);
+                        const arr = RandomTypeArr;
                         for (let counter = 1; counter <= maxCounter; counter++) {
                             const key = required[counter - 1] ?? (Random.string(1, 4) + counter);
-                            const value = Random.pick(arr)()
+                            const value = Random.pick(arr)();
                             obj[key] = value;
                         }
-                        // console.log(maxCounter, JSON.stringify(obj))
-                    } else if (1) {
+                    } else {
+                        const maxCounter = allowAdditional ? Random.integer(min, max ?? min + 5) : Math.min(max ?? min + 5, requiredLen + allowKeys.length);
+                        schema.properties = schema.properties ?? (allowKeys.length > 0 ? {} : (allowPattern ? {} : undefined));
+                        if (schema.properties !== undefined) {
+                            allowKeys = [...allowKeys];
+                            const properties = schema.properties;
+                            const arr = RandomTypeArr;
+                            const tmpReg: { [key: string]: RegExp } = {};
+                            // const maxTryTimes = keyPatterns.length * 2 + allowKeys.length;
+                            if (allowAdditional)
+                                allowKeys = Random.shuffle(allowKeys);
+                            for (let counter = 1; counter <= maxCounter;) {
+                                let key = required[counter - 1];
+                                // let keysDep: string[] = [key];
+                                let keysDep: string[] = [...(depkeys[key] ?? [key])];
+                                if (key === undefined) {
+                                    let tryTimes = 0;
+                                    let useAllowKey: boolean;
+                                    function genAllowKey() {
+                                        useAllowKey = true;
+                                        return allowKeys[0];
+                                    }
+                                    function genPatternKey() {
+                                        let p: string = Random.pick(keyPatterns);
+                                        p = RegExpUtil.fixPattern(p);
+                                        tmpReg[p] = new RegExp(p);
+                                        return Mock.mock(tmpReg[p]);
+                                    }
+                                    do {
+                                        useAllowKey = false;
+
+                                        if (!allowAdditional && keyPatterns.length == 0 && allowKeys.length == 0) {
+                                            debugger;
+                                            throw new SyntaxError("cannot mock a `property name`");
+                                        }
+                                        else if (allowAdditional && ((keyPatterns.length == 0 && allowKeys.length == 0))) {
+                                            key = (Random.string(1, 4) + counter);
+                                        }
+                                        else if (keyPatterns.length == 0 && allowKeys.length > 0) {
+                                            key = genAllowKey();
+                                        }
+                                        else if (allowPattern && keyPatterns.length > 0 && allowKeys.length == 0) {
+                                            key = genPatternKey()
+                                        } else {
+                                            key = Random.boolean() ? genAllowKey() : genPatternKey();
+                                        }
+
+                                        tryTimes++;
+                                        keysDep = [key];
+                                        if (obj[key] === undefined) {
+                                            keysDep = [...(depkeys[key] ?? [key])];
+                                            for (let idx = keysDep.length - 1; idx > -1; idx--) {
+                                                if (obj[keysDep[idx]] !== undefined) {
+                                                    keysDep.splice(idx, 1);
+                                                }
+                                            }
+                                            if (counter + keysDep.length - 1 > maxCounter) {
+                                                const idx = allowKeys.indexOf(key);
+                                                if (idx > -1)
+                                                    allowKeys.splice(idx, 1);
+                                                continue;
+                                            }
+                                            break;
+                                        } else {
+                                            break;
+                                        }
+
+                                    } while (true);
+                                    // counter += keysDep.length - 1;
+                                    if (useAllowKey) {
+                                        for (let iKey of keysDep) {
+                                            const idx = allowKeys.indexOf(iKey);
+                                            if (idx > -1) allowKeys.splice(idx, 1);
+                                        }
+                                    }
+                                }
+
+                                // const depValue: { [key: string]: any } = {};
+                                for (let iKey of keysDep) {
+                                    let value: any;
+                                    if (obj[iKey] !== undefined) {
+                                        // value = depValue[iKey];
+                                        counter++;
+                                        continue;
+                                    }
+                                    else if (depSchemas[iKey] !== undefined) {
+                                        const tmp = this.mockNode(depSchemas[iKey], { ...options, requiredOnly: true });
+                                        Object.assign(obj, tmp);
+                                        counter += Object.keys(tmp).length;
+                                        break;
+                                        // for (let i in tmp) {
+                                        //     depValue[i] = tmp[i];
+                                        // }
+                                    }
+                                    else if (properties[iKey] !== undefined) {
+                                        value = this.mockNode(properties[iKey], options);
+                                    }
+                                    else {
+                                        if (allowPattern && keyPatterns !== undefined) {
+                                            for (let j in schema.patternProperties) {
+                                                const jReg = tmpReg[j] ?? (tmpReg[j] = new RegExp(j));
+                                                if (jReg.test(iKey)) {
+                                                    value = this.mockNode(schema.patternProperties![j], _options);
+                                                    break
+                                                }
+                                            }
+                                        }
+
+                                        if (value === undefined) {
+                                            if (ArrayUtil.isObjectNotArray(schema.additionalProperties)) {
+                                                value = this.mockNode(<SchemaExt>schema.additionalProperties, options);
+                                            }
+                                            else if (schema.additionalProperties ?? true) {
+                                                value = Random.pick(arr)();
+                                            }
+                                            else {
+                                                debugger;
+                                                throw SyntaxError("cannot mock a `object`");
+                                            }
+
+                                        }
+                                    }
+                                    obj[iKey] = value;
+                                    counter++;
+                                }
+                            }
+                        }
+                        else {
+                            debugger;
+                            throw new SyntaxError("never");
+                        }
 
                     }
                     result = obj;
+                    // console.log(JSON.stringify(result));
                 }
                 break;
 
 
             case "string":
                 {
-                    function ensureStrLen(str: string, minLen: number, maxLen: number) {
+                    function ensureStrLen(str: string, minLen: number, maxLen?: number) {
                         if (minLen > str.length) {
-                            str += Random.string('', minLen - str.length, maxLen - minLength - str.length);
+                            str += Random.string(minLen - str.length, (maxLen ?? (minLength + 3)) - str.length);
                         }
+                        return str;
                     }
 
                     let pattern: string | undefined = _options.skipMockAtts.includes('pattren') ? undefined : <string>schema.pattern;
@@ -185,16 +451,14 @@ export class SchemaMock {
                         }
                     }
                     else {
-                        result = Random.string(minLength, maxLength);
+                        result = Random.string(minLength, maxLength ?? minLength + 5);
                     }
                 }
-
-
 
                 break;
 
             case "null":
-                result = null
+                result = null;
                 break;
 
             case "number":
@@ -239,8 +503,11 @@ export class SchemaMock {
 
                             // mockjs的Random.float生产机制会有机会超出min或max
                             // 修正方法：把result超出range的差值加到min
-                            if (result > max! || result < min!) {
-                                result = min! + (result % (max! - min!));
+                            if (result > max!) {
+                                result = min! + Math.abs((result % (max! - min!)));
+                            }
+                            else if (result < min!) {
+                                result = max! - Math.abs(result % (max! - min!));
                             }
                             if (exMin && result == min) {
                                 continue;
@@ -267,7 +534,9 @@ export class SchemaMock {
                 result = Random.boolean();
                 break;
         }
-        return result
+
+        // console.log(JSON.stringify(result));
+        return result;
     }
 
     static async parser(file: string): Promise<SchemaMock> {
@@ -279,14 +548,22 @@ export class SchemaMock {
         const str = fs.readFileSync(path.join(process.cwd(), file), "utf-8");
         // this._sv.schemas[name] = JSON.parse(str);
         // new jsonschema.Validator().addSchema();
-        const schema = JSON.parse(str);
-        const sm = new SchemaMock(schema);
-        return Promise.resolve(sm);
+        try {
+
+            const schema = JSON.parse(str);
+            const sm = new SchemaMock(schema);
+            return Promise.resolve(sm);
+        }
+        catch (err) {
+            console.error(err);
+            return Promise.reject(err);
+        }
 
     }
 }
 
 export type MockOptions = {
-    skipMockAtts: string[]
+    skipMockAtts: string[];
+    requiredOnly: boolean;
 }
 

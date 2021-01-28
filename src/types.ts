@@ -1,9 +1,11 @@
 import { Schema } from "jsonschema";
+import { AnalysisArrayResult } from "./analysis/array";
 import { AnalysisIntegerResult } from "./analysis/integer";
 import { AnalysisNumberResult } from "./analysis/number";
+import { AnalysisObjectResult } from "./analysis/object";
 import { AnalysisStringResult } from "./analysis/string";
 
-export interface SchemaExt extends Schema, AnalysisMark, xMockTest {
+export interface SchemaExt extends Schema, AnalysisMark, xMockTest, xMockTpl {
     additionalItems?: boolean | SchemaExt
     items?: SchemaExt | SchemaExt[]
     additionalProperties?: boolean | SchemaExt
@@ -30,7 +32,12 @@ export interface SchemaExt extends Schema, AnalysisMark, xMockTest {
     examples?: any[]
     propertyNames?: SchemaExt | boolean
     required?: string[]
+    pattern?: string;
+    contains?: SchemaExt | boolean;
+}
 
+export interface xMockTpl {
+    "x-mock-tpl"?: any;
 }
 
 export interface xMockTest {
@@ -45,19 +52,35 @@ export interface xMockTest {
 export interface AnalysisMark {
     "x-analysis-mark"?: {
         "allOf"?: boolean;
+        "anyOf"?: boolean;
+        "oneOf"?: boolean;
         "const"?: boolean;
         "enum"?: boolean;
         "examples"?: boolean;
         "integer"?: AnalysisIntegerResult;
-        "number"?: AnalysisNumberResult
-        "string"?: AnalysisStringResult
-        "object"?: AnalysisObjectResult
+        "number"?: AnalysisNumberResult;
+        "string"?: AnalysisStringResult;
+        "object"?: AnalysisObjectResult;
+        "array"?: AnalysisArrayResult;
+    },
+    "x-merge-mark"?: {
+        "anyOf"?: {
+            [key: string]: boolean;
+        },
+        "oneOf"?: {
+            [key: string]: boolean;
+        },
     }
 }
+
+export const MergeMarkName = "x-merge-mark";
 
 export const AnalysisMarkName = "x-analysis-mark";
 export enum AnalysisMarkEnum {
     AllOf = `allOf`,
+    OneOf = `oneOf`,
+    AnyOf = `anyOf`,
+
     Const = `const`,
     Enum = `enum`,
     Examples = `examples`,
@@ -65,4 +88,6 @@ export enum AnalysisMarkEnum {
     Number = "number",
     String = "string",
     Object = "object",
+    Array = "array",
+
 }

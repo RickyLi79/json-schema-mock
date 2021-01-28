@@ -5,10 +5,10 @@ export function analysisString(schema: SchemaExt): AnalysisStringResult {
         // console.log(`analysisString`, JSON.stringify(schema).length);
 
         let { minLength = 0, maxLength, format } = schema;
-        maxLength = maxLength ?? minLength + 10;
+        maxLength = maxLength;
 
         //检测 min和max
-        if (minLength<0 || minLength > maxLength)
+        if ( maxLength!==undefined && minLength > maxLength)
             throw SyntaxError(`string len setting ERROR`)
 
         const result = schema[AnalysisMarkName]![AnalysisMarkEnum.String] = { minLength, maxLength, format }
@@ -19,6 +19,7 @@ export function analysisString(schema: SchemaExt): AnalysisStringResult {
 
 export type AnalysisStringResult = {
     minLength: number;
-    maxLength: number;
+    maxLength?: number;
     format?: string
 }
+
