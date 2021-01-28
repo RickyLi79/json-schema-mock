@@ -9,10 +9,18 @@
 生成支持的完整列表参看[Tested List](./TestedList.md)
 
 ## 安装
+```
+//# Gitee
+npm install https://gitee.com/RickyLi79/json-schema-mock.git
+```
 
-`npm install `
+```
+//# github
+npm install https://github.com/RickyLi79/json-schema-mock.git
+```
 
 ## 使用方法
+
 
 
 

@@ -112,4 +112,4 @@
         - ***BUG*** do not check conflict whit other subschemas
     - [ ] `not` do not support
 
-- `$ref ` not support
+- `$id` `$ref` : not support

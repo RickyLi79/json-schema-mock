@@ -36,7 +36,6 @@ const fs_1 = __importDefault(require("fs"));
 const lodash_1 = __importDefault(require("lodash"));
 const jsonschema_1 = __importDefault(require("jsonschema"));
 const mockjs_1 = __importStar(require("mockjs"));
-const path_1 = __importDefault(require("path"));
 const array_1 = require("./analysis/array");
 const default_1 = require("./analysis/default");
 const integer_1 = require("./analysis/integer");
@@ -46,6 +45,8 @@ const string_1 = require("./analysis/string");
 const ArrayUtil_1 = require("./utils/ArrayUtil");
 const RegExpUtil_1 = require("./utils/RegExpUtil");
 const mockjs_2 = __importDefault(require("mockjs"));
+const JsonUtil_1 = require("./utils/JsonUtil");
+const HttpUtil_1 = require("./utils/HttpUtil");
 mockjs_1.Random.tld = function () {
     return this.pick((
     // 域名后缀
@@ -60,15 +61,31 @@ mockjs_1.Random.tld = function () {
         'ad ae af ag ai al am an ao aq ar as at au aw az ba bb bd be bf bg bh bi bj bm bn bo br bs bt bv bw by bz ca cc cf cg ch ci ck cl cm cn co cq cr cu cv cx cy cz de dj dk dm do dz ec ee eg eh es et ev fi fj fk fm fo fr ga gb gd ge gf gh gi gl gm gn gp gr gt gu gw gy hk hm hn hr ht hu id ie il in io iq ir is it jm jo jp ke kg kh ki km kn kp kr kw ky kz la lb lc li lk lr ls lt lu lv ly ma mc md mg mh ml mm mn mo mp mq mr ms mt mv mw mx my mz na nc ne nf ng ni nl no np nr nt nu nz om qa pa pe pf pg ph pk pl pm pn pr pt pw py re ro ru rw sa sb sc sd se sg sh si sj sk sl sm sn so sr st su sy sz tc td tf tg th tj tk tm tn to tp tr tt tv tw tz ua ug uk us uy va vc ve vg vn vu wf ws ye yu za zm zr zw').split(' '));
 };
 class SchemaMock {
-    constructor(orgSchema) {
-        this._orgSchema = orgSchema;
-        this._analysisSchema = lodash_1.default.cloneDeep(orgSchema);
+    constructor(schema) {
+        this._orgSchema = lodash_1.default.cloneDeep(schema);
+        this._analysisSchema = lodash_1.default.cloneDeep(schema);
     }
+    /**
+     * the orgin schema from `#parser`
+     * @see #parser
+     */
     get schema() {
         return this._orgSchema;
     }
     get analysisSchema() {
         return this._analysisSchema;
+    }
+    /**
+     * get one mock data
+     * @param jspath like : "#/a/b/0/d". MUST startWith "#/"
+     */
+    mock(jspath = {}) {
+        if (typeof jspath === "string") {
+            jspath = { jspath };
+        }
+        const opt = Object.assign({ path: "", skipMockAtts: [], requiredOnly: false }, jspath);
+        const node = JsonUtil_1.JsonUtil.getValueByJSPath(this.analysisSchema, opt.jspath);
+        return SchemaMock.mock(node, opt);
     }
     static mock(orgSchema, options = {}) {
         var _a, _b, _c, _d, _e, _f, _g;
@@ -509,23 +526,37 @@ class SchemaMock {
         // console.log(JSON.stringify(result));
         return result;
     }
-    static parser(file) {
+    /**
+     * to create SchemaMock
+     * @param schema
+     */
+    static parser(schema) {
         return __awaiter(this, void 0, void 0, function* () {
-            const name = path_1.default.join(process.cwd(), file);
-            if (this._instances[name])
-                return Promise.resolve(this._instances[name]);
-            const str = fs_1.default.readFileSync(path_1.default.join(process.cwd(), file), "utf-8");
-            // this._sv.schemas[name] = JSON.parse(str);
-            // new jsonschema.Validator().addSchema();
-            try {
-                const schema = JSON.parse(str);
+            if (typeof schema === "string") {
+                const name = schema;
+                if (this._instances[name])
+                    return Promise.resolve(this._instances[name]);
+                try {
+                    let str;
+                    if (/^(https?:\/\/)/i.test(name)) {
+                        str = yield HttpUtil_1.HttpUtil.get(name);
+                    }
+                    else {
+                        str = yield fs_1.default.readFileSync(name, { encoding: "utf-8" });
+                    }
+                    const schema = JSON.parse(str);
+                    const sm = new SchemaMock(schema);
+                    return Promise.resolve(sm);
+                }
+                catch (err) {
+                    return Promise.reject(err);
+                }
+            }
+            else if (!Array.isArray(schema) && typeof schema === "object") {
                 const sm = new SchemaMock(schema);
                 return Promise.resolve(sm);
             }
-            catch (err) {
-                console.error(err);
-                return Promise.reject(err);
-            }
+            return Promise.reject(new SyntaxError("some thing wrong"));
         });
     }
 }

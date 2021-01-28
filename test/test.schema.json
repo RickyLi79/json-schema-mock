@@ -55,7 +55,7 @@
           "maximum": 10.2
         },
         "num2": {
-          "description": "`multipleOf` > 浮点精度",
+          "description": "`multipleOf` : float",
           "type": "number",
           "minimum": 1.1,
           "maximum": 10.11,
@@ -203,33 +203,6 @@
             "repeat": 1,
             "assertExecSuccess": false
           }
-        }
-      }
-    },
-    "examples": {
-      "properties": {
-        "1": {
-          "type": "number",
-          "description": "check : `type` is single ",
-          "examples": [
-            1,
-            "2",
-            3
-          ]
-        },
-        "2": {
-          "type": [
-            "number",
-            "integer"
-          ],
-          "description": "check : `type` is array",
-          "examples": [
-            1,
-            "2",
-            3,
-            true,
-            null
-          ]
         }
       }
     },
@@ -2347,42 +2320,6 @@
             "itMode": 0
           }
         }
-      }
-    },
-    "test": {
-      "properties": {
-        "1": {
-          "description": "`x-mock-tpl`",
-          "x-mock-tpl": {
-            "@string": 1
-          }
-        }
-      }
-    },
-    "test2": {
-      "description": "`array` : `additionalItems` n-level",
-      "type": "array",
-      "uniqueItems": true,
-      "x-mock-test": {
-        "repeat": -1,
-        "assertExecSuccess": true,
-        "itMode": 0
-      }
-    },
-    "test3": {
-      "description": "`object` : `patternProperties` n-level",
-      "anyOf": [
-        {
-          "type": "integer"
-        },
-        {
-          "type": "boolean"
-        }
-      ],
-      "x-mock-test": {
-        "repeat": -1,
-        "assertExecSuccess": true,
-        "itMode": 2
       }
     }
   }

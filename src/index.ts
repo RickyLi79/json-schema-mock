@@ -1,4 +1,5 @@
-import fs from "fs";
+import fs, { PathLike } from "fs";
+import http from "http";
 import _ from "lodash";
 import jsonschema from "jsonschema";
 import Mock, { Random } from "mockjs";
@@ -13,6 +14,8 @@ import { SchemaExt } from "./types";
 import { ArrayUtil } from "./utils/ArrayUtil";
 import { RegExpUtil } from "./utils/RegExpUtil";
 import mockjs from "mockjs";
+import { JsonUtil } from "./utils/JsonUtil";
+import { HttpUtil } from "./utils/HttpUtil";
 
 
 Random.tld = function () { // Top Level Domain
@@ -37,21 +40,41 @@ export class SchemaMock {
     protected static _instances: { [name: string]: SchemaMock } = {};
 
     protected readonly _orgSchema: SchemaExt;
+
+    /**
+     * the orgin schema from `#parser`
+     * @see #parser
+     */
     public get schema() {
         return this._orgSchema;
     }
+
     public get analysisSchema() {
         return this._analysisSchema;
     }
 
     protected _analysisSchema: SchemaExt;
 
-    protected constructor(orgSchema: SchemaExt) {
-        this._orgSchema = orgSchema;
-        this._analysisSchema = _.cloneDeep(orgSchema);
+    protected constructor(schema: SchemaExt) {
+        this._orgSchema = _.cloneDeep(schema);
+        this._analysisSchema = _.cloneDeep(schema);
     }
 
-    static mock(orgSchema: SchemaExt, options: Partial<MockOptions> = {}): any {
+
+    /**
+     * get one mock data
+     * @param jspath like : "#/a/b/0/d". MUST startWith "#/"
+     */
+    mock(jspath: string | Partial<MockOptions> = {}) {
+        if (typeof jspath === "string") {
+            jspath = { jspath };
+        }
+        const opt: MockOptions = Object.assign({ path: "", skipMockAtts: [], requiredOnly: false }, jspath);
+        const node = JsonUtil.getValueByJSPath(this.analysisSchema, opt.jspath!);
+        return SchemaMock.mock(node, opt);
+    }
+
+    protected static mock(orgSchema: SchemaExt, options: Partial<MockOptions> = {}): any {
         let schema = analysisSchema(orgSchema, false);
         let result: any
 
@@ -67,7 +90,7 @@ export class SchemaMock {
 
         if (schema.enum !== undefined) {
             let enumIdxArr: number[] = [];
-            for (let i = schema.enum.length-1; i > -1; i--) {
+            for (let i = schema.enum.length - 1; i > -1; i--) {
                 enumIdxArr.unshift(i);
             }
             enumIdxArr = Random.shuffle(enumIdxArr);
@@ -531,31 +554,57 @@ export class SchemaMock {
         return result;
     }
 
-    static async parser(file: string): Promise<SchemaMock> {
-        const name = path.join(process.cwd(), file);
+    /**
+     * to create SchemaMock
+     * @param schema 
+     */
+    static async parser(schema: string | SchemaExt): Promise<SchemaMock> {
+        if (typeof schema === "string") {
+            const name = schema;
+            if (this._instances[name])
+                return Promise.resolve(this._instances[name]);
 
-        if (this._instances[name])
-            return Promise.resolve(this._instances[name])
-
-        const str = fs.readFileSync(path.join(process.cwd(), file), "utf-8");
-        // this._sv.schemas[name] = JSON.parse(str);
-        // new jsonschema.Validator().addSchema();
-        try {
-
-            const schema = JSON.parse(str);
+            try {
+                let str:string;
+                if (/^(https?:\/\/)/i.test(name)) {
+                    str = await HttpUtil.get(name);
+                }
+                else
+                {
+                    str = await fs.readFileSync(name, { encoding: "utf-8" });
+                }
+                const schema = JSON.parse(str);
+                const sm = new SchemaMock(schema);
+                return Promise.resolve(sm);
+            }
+            catch (err) {
+                return Promise.reject(err);
+            }
+        }
+        else if (!Array.isArray(schema) && typeof schema === "object") {
             const sm = new SchemaMock(schema);
             return Promise.resolve(sm);
         }
-        catch (err) {
-            console.error(err);
-            return Promise.reject(err);
-        }
+
+        return Promise.reject(new SyntaxError("some thing wrong"));
 
     }
 }
 
 export type MockOptions = {
+    /**
+     * like : "#/a/b/0/c"
+     */
+    jspath?: string;
+
+    /**
+     * the given attributes will not be mock
+     */
     skipMockAtts: string[];
+
+    /**
+     * if `true`, `object` data will only mock propertis in `required`
+     */
     requiredOnly: boolean;
 }
 

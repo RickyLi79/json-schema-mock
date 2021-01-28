@@ -3,39 +3,47 @@ import jsonschema from "jsonschema";
 import _ from "lodash";
 import { SchemaMock } from "../src";
 import { SchemaExt } from "../src/types";
+import { JsonUtil } from "../src/utils/JsonUtil";
 
 class NodeTestStoreStatic {
 
-    ms?: SchemaMock;
+    ms!: SchemaMock;
 
     async getSchemaMock() {
         this.ms = await SchemaMock.parser('test/test.schema.json');
         return this.ms;
     }
 
-    ltEach(node: { [name: string]: SchemaExt }, options?: Partial<MockNodeGltOptions>) {
+    async ltEach(title:string, jspath: string, options?: Partial<MockNodeGltOptions>) {
+        this.ms = await SchemaMock.parser('test/test.schema.json');
         let _option: MockNodeGltOptions = { repeat: 1000, assertValidSuccess: true, assertExecSuccess: true, skipValidAtts: [], skipMockAtts: [], itMode: 0 };
         Object.assign(_option, options ?? {});
-        for (let key in node) {
-            let schema: any = node[key];
+        const node = JsonUtil.getValueByJSPath(this.ms.analysisSchema, jspath)!;
+        describe(title, ()=>{
 
-            let label = schema.description;
-            const opt: MockNodeGltOptions = Object.assign({}, _option, schema['x-mock-test'] ?? {});
-            if (opt.repeat < 0) {
-                opt.repeat = options?.repeat ?? 1;
+            for (let key in node) {
+                let schema: any = node[key];
+                
+                let label = schema.description;
+                const opt: MockNodeGltOptions = Object.assign({}, _option, schema['x-mock-test'] ?? {});
+                if (opt.repeat < 0) {
+                    opt.repeat = options?.repeat ?? 1;
+                }
+                this.lt(label, () => jspath + "/" + key, opt);
             }
-            this.lt(label, () => schema, opt);
-        }
+        });
     }
 
-    lt(label: string, schemaFunc: () => SchemaExt | undefined, options?: Partial<MockNodeGltOptions>) {
+
+    lt(label: string, jspathFunc: () => string, options?: Partial<MockNodeGltOptions>) {
         const _options: MockNodeGltOptions = Object.assign({
             repeat: 1, assertValidSuccess: true, assertExecSuccess: true, skipValidAtts: [], skipMockAtts: [], itMode: 0
         }, options)
         let _it = [it, it.skip, it.only][_options.itMode] ?? it
         return _it(label, async (done) => {
             // console.group(label);
-            const schema = schemaFunc();
+            const jspath = jspathFunc();
+            const schema = JsonUtil.getValueByJSPath(this.ms.analysisSchema, jspath);
             if (schema === undefined) {
                 done?.()
                 // console.groupEnd();
@@ -44,7 +52,7 @@ class NodeTestStoreStatic {
             const orgSchema = _.cloneDeep(schema);
             try {
                 for (let i = 0; i < _options.repeat; i++) {
-                    const re = SchemaMock.mockNode(schema!, { skipMockAtts: _options.skipMockAtts });
+                    const re = this.ms.mock({ jspath, skipMockAtts: _options.skipMockAtts });
                     if (re === undefined) {
                         throw new AssertionError({
                             message: `[#${i}] ${re}`,
