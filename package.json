@@ -1,14 +1,14 @@
 {
-  "name": "mock-schema-by-context",
+  "name": "json-schema-mock",
   "version": "1.0.0",
-  "description": "",
+  "description": "json schema mock",
   "main": "bin/index.js",
   "scripts": {
     "test": "mocha --reporter spec --timeout 10000 --colors --require ts-node/register test/**/*.test.ts",
     "mocha:debug": "mocha --reporter spec --timeout 10000 --colors --require ts-node/register test/debug.ts",
     "build":"tsc"
   },
-  "keywords": [],
+  "keywords": ["json schema","mock","faker"],
   "author": "",
   "license": "ISC",
   "dependencies": {
