@@ -34,8 +34,9 @@ SchemaMock.parser(schema).then( (schemaMock)=>{
 ```
 
 ## Usage Examples
-    - [./examples/byFileOrUrl.ts](./examples/byFileOrUrl.ts)
-    - [./examples/bySchema.ts](./examples/bySchema.ts)
+- [examples/byFileOrUrl.ts](examples/byFileOrUrl.ts)
+- [examples/bySchema.ts](examples/bySchema.ts)
+    
 
 ## Not support & BUG
 - Not support `$id` and `$ref`
