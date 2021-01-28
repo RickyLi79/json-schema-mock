@@ -21,6 +21,7 @@
     "random"
   ],
   "author": "Ricky <382688672@qq.com>",
+  "homepage": "https://github.com/RickyLi79/j",
   "licenses": [
     {
       "type": "MIT",
@@ -33,7 +34,6 @@
     "mockjs": "^1.1.0"
   },
   "devDependencies": {
-    "@types/jsonschema": "^1.1.1",
     "@types/lodash": "^4.14.168",
     "@types/mocha": "^8.2.0",
     "@types/mockjs": "^1.0.3",

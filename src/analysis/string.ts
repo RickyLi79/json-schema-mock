@@ -1,4 +1,4 @@
-import { AnalysisMarkEnum, AnalysisMarkName, SchemaExt } from "../types"
+import { AnalysisMarkEnum, AnalysisMarkName, SchemaExt } from "../types";
 
 export function analysisString(schema: SchemaExt): AnalysisStringResult {
     if (schema[AnalysisMarkName]![AnalysisMarkEnum.String] === undefined) {
@@ -8,7 +8,7 @@ export function analysisString(schema: SchemaExt): AnalysisStringResult {
         maxLength = maxLength;
 
         //检测 min和max
-        if ( maxLength!==undefined && minLength > maxLength)
+        if (maxLength !== undefined && minLength > maxLength)
             throw SyntaxError(`string len setting ERROR`)
 
         const result = schema[AnalysisMarkName]![AnalysisMarkEnum.String] = { minLength, maxLength, format }

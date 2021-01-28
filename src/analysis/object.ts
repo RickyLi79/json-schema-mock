@@ -1,6 +1,6 @@
 import _ from "lodash";
 import { Random } from "mockjs";
-import { AnalysisMarkEnum, AnalysisMarkName, SchemaExt } from "../types"
+import { AnalysisMarkEnum, AnalysisMarkName, SchemaExt } from "../types";
 import { ArrayUtil } from "../utils/ArrayUtil";
 import { analysisSchema } from "./default";
 

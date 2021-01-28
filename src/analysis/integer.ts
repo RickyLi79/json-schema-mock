@@ -1,4 +1,4 @@
-import { AnalysisMarkEnum, AnalysisMarkName, SchemaExt } from "../types"
+import { AnalysisMarkEnum, AnalysisMarkName, SchemaExt } from "../types";
 
 export function analysisInteger(schema: SchemaExt): AnalysisIntegerResult {
     if (schema[AnalysisMarkName]![AnalysisMarkEnum.Integer] === undefined) {

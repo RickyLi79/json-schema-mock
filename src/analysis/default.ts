@@ -1,9 +1,8 @@
 import _ from "lodash";
-import jsonschema from "jsonschema";
-import { AnalysisMarkEnum, AnalysisMarkName, MergeMarkName, SchemaExt } from "../types";
+import { Random } from "mockjs";
+import { AnalysisMarkEnum, AnalysisMarkName, SchemaExt } from "../types";
 import { ArrayUtil } from "../utils/ArrayUtil";
 import { RegExpUtil } from "../utils/RegExpUtil";
-import { Random } from "mockjs";
 
 
 

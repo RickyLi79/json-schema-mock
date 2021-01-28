@@ -1,21 +1,18 @@
-import fs, { PathLike } from "fs";
-import http from "http";
-import _ from "lodash";
+import fs from "fs";
 import jsonschema from "jsonschema";
-import Mock, { Random } from "mockjs";
-import path from "path";
+import _ from "lodash";
+import { default as Mock, default as mockjs, Random } from "mockjs";
 import { analysisArray } from "./analysis/array";
-import { analysisSchema, CombindPrefix } from "./analysis/default";
+import { analysisSchema } from "./analysis/default";
 import { analysisInteger } from "./analysis/integer";
 import { analysisNumber } from "./analysis/number";
 import { analysisObject, RandomTypeArr, TypesToRandom } from "./analysis/object";
 import { analysisString } from "./analysis/string";
 import { SchemaExt } from "./types";
 import { ArrayUtil } from "./utils/ArrayUtil";
-import { RegExpUtil } from "./utils/RegExpUtil";
-import mockjs from "mockjs";
-import { JsonUtil } from "./utils/JsonUtil";
 import { HttpUtil } from "./utils/HttpUtil";
+import { JsonUtil } from "./utils/JsonUtil";
+import { RegExpUtil } from "./utils/RegExpUtil";
 
 
 Random.tld = function () { // Top Level Domain
@@ -565,12 +562,11 @@ export class SchemaMock {
                 return Promise.resolve(this._instances[name]);
 
             try {
-                let str:string;
+                let str: string;
                 if (/^(https?:\/\/)/i.test(name)) {
                     str = await HttpUtil.get(name);
                 }
-                else
-                {
+                else {
                     str = await fs.readFileSync(name, { encoding: "utf-8" });
                 }
                 const schema = JSON.parse(str);

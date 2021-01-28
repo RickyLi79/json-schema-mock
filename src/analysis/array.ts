@@ -1,4 +1,4 @@
-import { AnalysisMarkEnum, AnalysisMarkName, SchemaExt } from "../types"
+import { AnalysisMarkEnum, AnalysisMarkName, SchemaExt } from "../types";
 import { ArrayUtil } from "../utils/ArrayUtil";
 import { CombindPrefix } from "./default";
 
