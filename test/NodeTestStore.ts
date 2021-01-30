@@ -2,7 +2,6 @@ import { AssertionError } from "assert";
 import jsonschema from "jsonschema";
 import _ from "lodash";
 import { SchemaMock } from "../src";
-import { SchemaExt } from "../src/types";
 import { JsonUtil } from "../src/utils/JsonUtil";
 
 class NodeTestStoreStatic {
@@ -27,7 +26,7 @@ class NodeTestStoreStatic {
                 let label = schema.description;
                 const opt: MockNodeGltOptions = Object.assign({}, _option, schema['x-mock-test'] ?? {});
                 if (opt.repeat < 0) {
-                    opt.repeat = options?.repeat ?? 1;
+                    opt.repeat = options?.repeat ?? 1000;
                 }
                 this.lt(label, () => jspath + "/" + key, opt);
             }

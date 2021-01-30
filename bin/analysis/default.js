@@ -5,10 +5,10 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.analysisOneOf = exports.analysisAnyOf = exports.analysisAnyOf_bak = exports.analysisAllOf = exports.CombindPrefix = exports.analysisCombining = exports.analysisSchema = void 0;
 const lodash_1 = __importDefault(require("lodash"));
+const mockjs_1 = require("mockjs");
 const types_1 = require("../types");
 const ArrayUtil_1 = require("../utils/ArrayUtil");
 const RegExpUtil_1 = require("../utils/RegExpUtil");
-const mockjs_1 = require("mockjs");
 //#region resolve schema
 function analysisSchema(orgSchema, clone, extra = {}) {
     var _a;
@@ -324,7 +324,7 @@ function analysisAllOf(schema, level, keysToComb, addMark = true, force = false)
                                 analysisSchema(reObj, false);
                                 const tmp = (_g = iSchema[`${exports.CombindPrefix}contains`]) !== null && _g !== void 0 ? _g : [iObj];
                                 if (result[`${exports.CombindPrefix}contains`] === undefined)
-                                    result[`${exports.CombindPrefix}contains`] = tmp;
+                                    result[`${exports.CombindPrefix}contains`] = [reObj, ...tmp];
                                 else
                                     result[`${exports.CombindPrefix}contains`].push(...tmp);
                             }

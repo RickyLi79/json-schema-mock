@@ -33,8 +33,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.SchemaMock = void 0;
 const fs_1 = __importDefault(require("fs"));
-const lodash_1 = __importDefault(require("lodash"));
 const jsonschema_1 = __importDefault(require("jsonschema"));
+const lodash_1 = __importDefault(require("lodash"));
 const mockjs_1 = __importStar(require("mockjs"));
 const array_1 = require("./analysis/array");
 const default_1 = require("./analysis/default");
@@ -43,10 +43,9 @@ const number_1 = require("./analysis/number");
 const object_1 = require("./analysis/object");
 const string_1 = require("./analysis/string");
 const ArrayUtil_1 = require("./utils/ArrayUtil");
-const RegExpUtil_1 = require("./utils/RegExpUtil");
-const mockjs_2 = __importDefault(require("mockjs"));
-const JsonUtil_1 = require("./utils/JsonUtil");
 const HttpUtil_1 = require("./utils/HttpUtil");
+const JsonUtil_1 = require("./utils/JsonUtil");
+const RegExpUtil_1 = require("./utils/RegExpUtil");
 mockjs_1.Random.tld = function () {
     return this.pick((
     // 域名后缀
@@ -96,7 +95,7 @@ class SchemaMock {
             return result;
         }
         if (schema["x-mock-tpl"] !== undefined) {
-            const re = mockjs_2.default.mock({ ROOT: schema["x-mock-tpl"] });
+            const re = mockjs_1.default.mock({ ROOT: schema["x-mock-tpl"] });
             return re.ROOT;
         }
         if (schema.enum !== undefined) {
@@ -221,6 +220,7 @@ class SchemaMock {
                     }
                     result = arr;
                 }
+                // console.log(JSON.stringify(result));
                 break;
             case "object":
                 {

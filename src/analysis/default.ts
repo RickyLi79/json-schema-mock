@@ -353,7 +353,7 @@ export function analysisAllOf(schema: SchemaExt, level: number, keysToComb?: Set
                                 const tmp = iSchema[`${CombindPrefix}contains`] ?? [iObj];
 
                                 if (result[`${CombindPrefix}contains`] === undefined)
-                                    result[`${CombindPrefix}contains`] = tmp;
+                                    result[`${CombindPrefix}contains`] = [reObj, ...tmp];
                                 else
                                     result[`${CombindPrefix}contains`].push(...tmp);
                             }

@@ -220,6 +220,7 @@ export class SchemaMock {
                     }
                     result = arr;
                 }
+                // console.log(JSON.stringify(result));
                 break;
 
             case "object":
@@ -588,6 +589,7 @@ export class SchemaMock {
 }
 
 export type MockOptions = {
+
     /**
      * like : "#/a/b/0/c"
      */
@@ -604,4 +606,18 @@ export type MockOptions = {
     requiredOnly: boolean;
 }
 
+// export type MockResult = {
+//     rootSchema: SchemaExt;
+//     jspath: string;
+
+//     mockSchema: SchemaExt;
+//     mockData: any;
+
+//     errors: Error[];
+
+//     warns: string[];
+// }
+
 export type Schema = SchemaExt
+
+

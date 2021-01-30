@@ -2,7 +2,85 @@
   "$schema": "http://json-schema.org/draft-07/schema#",
   "type": "object",
   "properties": {
-    "int": {
+    "defulat": {
+      "description": "defulat",
+      "properties": {
+        "Pet": {
+          "description": "Pet",
+          "type": "object",
+          "required": [
+            "id",
+            "name"
+          ],
+          "properties": {
+            "id": {
+              "type": "integer",
+              "format": "int64"
+            },
+            "name": {
+              "type": "string"
+            },
+            "tag": {
+              "type": "string"
+            }
+          }
+        },
+        "Error": {
+          "description": "Error",
+          "type": "object",
+          "required": [
+            "code",
+            "message"
+          ],
+          "properties": {
+            "code": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "message": {
+              "type": "string"
+            }
+          }
+        },
+        "dataSetList": {
+          "description": "dataSetList",
+          "type": "object",
+          "properties": {
+            "total": {
+              "type": "integer"
+            },
+            "apis": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "apiKey": {
+                    "type": "string",
+                    "description": "To be used as a dataset parameter value"
+                  },
+                  "apiVersionNumber": {
+                    "type": "string",
+                    "description": "To be used as a version parameter value"
+                  },
+                  "apiUrl": {
+                    "type": "string",
+                    "format": "uriref",
+                    "description": "The URL describing the dataset's fields"
+                  },
+                  "apiDocumentationUrl": {
+                    "type": "string",
+                    "format": "uriref",
+                    "description": "A URL to the API console for each API"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "integer": {
+      "description": "integer",
       "type": "object",
       "properties": {
         "int0": {
@@ -35,7 +113,8 @@
         }
       }
     },
-    "num": {
+    "number": {
+      "description": "number",
       "type": "object",
       "properties": {
         "num1": {
@@ -82,7 +161,8 @@
         }
       }
     },
-    "str": {
+    "string": {
+      "description": "string",
       "type": "object",
       "properties": {
         "str1": {
@@ -142,11 +222,12 @@
         }
       }
     },
-    "enums": {
+    "enum": {
+      "description": "enum",
       "properties": {
         "enum0": {
           "type": "string",
-          "description": "清除无效enum后，校验是否空值",
+          "description": "filter `enum` -> no aviable item",
           "enum": [
             1,
             true
@@ -158,7 +239,7 @@
         },
         "enum1": {
           "type": "integer",
-          "description": "清除无效enum",
+          "description": "filter `enum` with one `type`",
           "enum": [
             "1",
             2,
@@ -170,7 +251,7 @@
             "integer",
             "string"
           ],
-          "description": "清除无效enum 2",
+          "description": "filter `enum` with many `type`",
           "enum": [
             1,
             2,
@@ -183,12 +264,13 @@
           "maximum": 2,
           "maxLength": 1,
           "x-mock-test": {
-            "itMode": 2
+            "itMode": 0
           }
         }
       }
     },
     "const": {
+      "description": "const",
       "properties": {
         "0": {
           "description": "base",
@@ -207,6 +289,7 @@
       }
     },
     "object": {
+      "description": "object",
       "type": "object",
       "properties": {
         "1": {
@@ -275,8 +358,7 @@
             "c": {
               "type": "number"
             },
-            "d": {
-            }
+            "d": {}
           },
           "x-mock-test": {
             "assertExecSuccess": true,
@@ -310,8 +392,7 @@
             "c": {
               "type": "number"
             },
-            "d": {
-            }
+            "d": {}
           },
           "x-mock-test": {
             "repeat": -1,
@@ -342,8 +423,7 @@
             "c": {
               "type": "number"
             },
-            "d": {
-            }
+            "d": {}
           },
           "x-mock-test": {
             "repeat": -1,
@@ -385,8 +465,7 @@
             "c": {
               "type": "number"
             },
-            "d": {
-            }
+            "d": {}
           },
           "x-mock-test": {
             "repeat": -1,
@@ -428,8 +507,7 @@
             "c": {
               "type": "number"
             },
-            "d": {
-            }
+            "d": {}
           },
           "x-mock-test": {
             "repeat": -1,
@@ -460,8 +538,7 @@
             "c": {
               "type": "number"
             },
-            "d": {
-            }
+            "d": {}
           },
           "patternProperties": {
             "^a1": {
@@ -492,8 +569,7 @@
             "c": {
               "type": "number"
             },
-            "d": {
-            }
+            "d": {}
           },
           "dependencies": {
             "a": [
@@ -521,8 +597,7 @@
             "c": {
               "type": "number"
             },
-            "d": {
-            }
+            "d": {}
           },
           "dependencies": {
             "a": [
@@ -551,8 +626,7 @@
             "c": {
               "type": "number"
             },
-            "d": {
-            }
+            "d": {}
           },
           "dependencies": {
             "a": [
@@ -628,6 +702,7 @@
       }
     },
     "array": {
+      "description": "array",
       "properties": {
         "1": {
           "description": "base",
@@ -819,6 +894,7 @@
       }
     },
     "AllOf": {
+      "description": "allOf",
       "type": "object",
       "properties": {
         "type-3": {
@@ -1279,8 +1355,7 @@
           "allOf": [
             {
               "allOf": [
-                {
-                },
+                {},
                 {
                   "allOf": [
                     {
@@ -1304,8 +1379,7 @@
             {
               "format": "email",
               "allOf": [
-                {
-                },
+                {},
                 {
                   "allOf": [
                     {
@@ -2087,6 +2161,7 @@
       }
     },
     "AnyOf": {
+      "description": "anyOf",
       "type": "object",
       "properties": {
         "1": {
@@ -2247,6 +2322,7 @@
       }
     },
     "OneOf": {
+      "description": "oneOf",
       "type": "object",
       "properties": {
         "4": {
