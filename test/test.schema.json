@@ -14,16 +14,18 @@
           ],
           "properties": {
             "id": {
-              "type": "integer",
-              "format": "int64"
+              "type": "integer"
             },
             "name": {
-              "type": "string"
+              "type": "string",
+              "minLength": 3
             },
             "tag": {
-              "type": "string"
+              "type": "string",
+              "minLength": 1
             }
-          }
+          },
+          "additionalProperties": false
         },
         "Error": {
           "description": "Error",
