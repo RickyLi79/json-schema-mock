@@ -16,13 +16,7 @@ Generate data base on given [JSON Schema draft 7](http://json-schema.org/underst
 
 ## Install
 ```shell
-# Gitee码云
-$ npm install https://gitee.com/RickyLi79/json-schema-mock.git
-```
-
-```shell
-# github
-$ npm install https://github.com/RickyLi79/json-schema-mock.git
+$ npm install @rickyli79/json-schema-mock
 ```
 
 ## Usage

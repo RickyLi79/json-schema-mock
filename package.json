@@ -1,7 +1,7 @@
 {
-  "name": "json-schema-mock",
-  "version": "1.0.0",
-  "description": "json schema mock",
+  "name": "@rickyli79/json-schema-mock",
+  "version": "1.0.1",
+  "description": "Generate data base on given JSON Schema",
   "main": "bin/index.js",
   "scripts": {
     "test": "mocha --reporter spec --timeout 10000 --colors --require ts-node/register test/**/*.test.ts",
@@ -10,7 +10,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://gitee.com/RickyLi79/json-schema-mock.git"
+    "url": "https://github.com/RickyLi79/json-schema-mock.git"
   },
   "keywords": [
     "json",
@@ -21,7 +21,8 @@
     "random"
   ],
   "author": "Ricky <382688672@qq.com>",
-  "homepage": "https://github.com/RickyLi79/j",
+  "homepage": "https://rickyli79.github.io/json-schema-mock/",
+  "license": "MIT",
   "licenses": [
     {
       "type": "MIT",
@@ -42,5 +43,8 @@
     "mocha": "^8.2.1",
     "ts-node": "^9.1.1",
     "typescript": "^4.1.3"
-  }
+  },
+  "categories": [
+    "Programming Languages"
+  ]
 }
