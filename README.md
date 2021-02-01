@@ -10,6 +10,10 @@ Generate data base on given [JSON Schema draft 7](http://json-schema.org/underst
 - Analyze and filter the impossible rules. 
 - View full test list : [Test List](./TestList.md)
 
+## DEMO
+- https://rickyli79.github.io/json-schema-mock/
+- https://rickyli79.gitee.io/json-schema-mock/
+
 ## Install
 ```shell
 # Gitee码云

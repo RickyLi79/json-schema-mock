@@ -10,6 +10,10 @@
 - 过滤肯定冲突的规则，智能寻找不会发生冲突的规则进行数据生成
 - 生成支持的完整列表参看[Test List](./TestList.md)
 
+## DEMO
+- https://rickyli79.github.io/json-schema-mock/
+- https://rickyli79.gitee.io/json-schema-mock/
+
 ## 安装
 ```shell
 # Gitee码云
