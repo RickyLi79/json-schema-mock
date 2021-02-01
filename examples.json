@@ -1,0 +1,2404 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "properties": {
+    "defulat": {
+      "description": "defulat",
+      "properties": {
+        "Pet": {
+          "description": "Pet",
+          "type": "object",
+          "required": [
+            "id",
+            "name"
+          ],
+          "properties": {
+            "id": {
+              "type": "integer"
+            },
+            "name": {
+              "type": "string",
+              "minLength": 3
+            },
+            "tag": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "additionalProperties": false
+        },
+        "Error": {
+          "description": "Error",
+          "type": "object",
+          "required": [
+            "code",
+            "message"
+          ],
+          "properties": {
+            "code": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "message": {
+              "type": "string"
+            }
+          }
+        },
+        "dataSetList": {
+          "description": "dataSetList",
+          "type": "object",
+          "properties": {
+            "total": {
+              "type": "integer"
+            },
+            "apis": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "apiKey": {
+                    "type": "string",
+                    "description": "To be used as a dataset parameter value"
+                  },
+                  "apiVersionNumber": {
+                    "type": "string",
+                    "description": "To be used as a version parameter value"
+                  },
+                  "apiUrl": {
+                    "type": "string",
+                    "format": "uriref",
+                    "description": "The URL describing the dataset's fields"
+                  },
+                  "apiDocumentationUrl": {
+                    "type": "string",
+                    "format": "uriref",
+                    "description": "A URL to the API console for each API"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "integer": {
+      "description": "integer",
+      "type": "object",
+      "properties": {
+        "int0": {
+          "description": "range check",
+          "type": "integer",
+          "exclusiveMinimum": 1,
+          "exclusiveMaximum": 1,
+          "x-mock-test": {
+            "repeat": 1,
+            "assertExecSuccess": false
+          }
+        },
+        "int1": {
+          "description": "`min`+`max`",
+          "type": "integer",
+          "minimum": 10,
+          "maximum": 11,
+          "x-mock-test": {
+            "repeat": 10,
+            "itMode": 0
+          }
+        },
+        "int2": {
+          "description": "`exclusiveMinimum` + `exclusiveMaximum`",
+          "type": "integer",
+          "minimum": 10,
+          "exclusiveMinimum": 5,
+          "maximum": 20,
+          "exclusiveMaximum": 100
+        }
+      }
+    },
+    "number": {
+      "description": "number",
+      "type": "object",
+      "properties": {
+        "num1": {
+          "description": "`min`+`max`",
+          "type": "number",
+          "minimum": 1.2,
+          "maximum": 10.5
+        },
+        "num1a": {
+          "description": "`min`, no `max`",
+          "type": "number",
+          "minimum": 1.3
+        },
+        "num1b": {
+          "description": "`max`, no `min`",
+          "type": "number",
+          "maximum": 10.2
+        },
+        "num2": {
+          "description": "`multipleOf` : float",
+          "type": "number",
+          "minimum": 1.1,
+          "maximum": 10.11,
+          "multipleOf": 2.3
+        },
+        "num3": {
+          "description": "`multipleOf` : int",
+          "type": "number",
+          "minimum": 1.002,
+          "maximum": 10.222,
+          "multipleOf": 2
+        },
+        "num5": {
+          "description": "`multipleOf` : precision, no max",
+          "type": "number",
+          "minimum": -20,
+          "multipleOf": 3.14
+        },
+        "num6": {
+          "description": "`multipleOf` > float, no min",
+          "type": "number",
+          "exclusiveMaximum": 6.28,
+          "multipleOf": 3.14
+        }
+      }
+    },
+    "string": {
+      "description": "string",
+      "type": "object",
+      "properties": {
+        "str1": {
+          "description": "base",
+          "type": "string"
+        },
+        "str2a": {
+          "description": "len : min , no max",
+          "type": "string",
+          "minLength": 3
+        },
+        "str2b": {
+          "description": "len : no min , max",
+          "type": "string",
+          "maxLength": 13
+        },
+        "str2c": {
+          "description": "len : min && max",
+          "type": "string",
+          "minLength": 5,
+          "maxLength": 13
+        },
+        "str3": {
+          "description": "pattern",
+          "type": "string",
+          "pattern": "^(\\([0-9]{3}\\))?[0-9]{3}-[0-9]{4}$",
+          "x-mock-test": {
+            "repeat": -1,
+            "assertExecSuccess": true,
+            "itMode": 0
+          }
+        },
+        "str4": {
+          "description": "Built-in formats : email",
+          "type": "string",
+          "format": "email"
+        },
+        "str5": {
+          "type": "string",
+          "description": "Built-in formats : date",
+          "format": "date"
+        },
+        "str6": {
+          "type": "string",
+          "description": "Built-in formats : time",
+          "format": "time"
+        },
+        "str7": {
+          "type": "string",
+          "description": "Built-in formats : date-time",
+          "format": "date-time"
+        },
+        "str8": {
+          "type": "string",
+          "description": "Built-in formats : uri",
+          "format": "uri"
+        }
+      }
+    },
+    "enum": {
+      "description": "enum",
+      "properties": {
+        "enum0": {
+          "type": "string",
+          "description": "filter `enum` -> no aviable item",
+          "enum": [
+            1,
+            true
+          ],
+          "x-mock-test": {
+            "repeat": 1,
+            "assertExecSuccess": false
+          }
+        },
+        "enum1": {
+          "type": "integer",
+          "description": "filter `enum` with one `type`",
+          "enum": [
+            "1",
+            2,
+            4
+          ]
+        },
+        "enum2": {
+          "type": [
+            "integer",
+            "string"
+          ],
+          "description": "filter `enum` with many `type`",
+          "enum": [
+            1,
+            2,
+            "3",
+            "555",
+            true,
+            [],
+            {}
+          ],
+          "maximum": 2,
+          "maxLength": 1,
+          "x-mock-test": {
+            "itMode": 0
+          }
+        }
+      }
+    },
+    "const": {
+      "description": "const",
+      "properties": {
+        "0": {
+          "description": "base",
+          "type": "integer",
+          "const": 3
+        },
+        "1": {
+          "description": "`type` conflict",
+          "type": "number",
+          "const": true,
+          "x-mock-test": {
+            "repeat": 1,
+            "assertExecSuccess": false
+          }
+        }
+      }
+    },
+    "object": {
+      "description": "object",
+      "type": "object",
+      "properties": {
+        "1": {
+          "description": "no : `properties` `patternProperties` `propertyNames` `additionalProperties`",
+          "type": "object"
+        },
+        "2": {
+          "description": "`minProperties`/`maxProperties`",
+          "type": "object",
+          "minProperties": 3,
+          "x-mock-test": {
+            "repeat": 10,
+            "assertExecSuccess": true
+          }
+        },
+        "3": {
+          "description": "`minProperties` + `maxProperties` conflict check",
+          "type": "object",
+          "minProperties": 10,
+          "maxProperties": 0,
+          "x-mock-test": {
+            "repeat": 10,
+            "assertExecSuccess": false
+          }
+        },
+        "4": {
+          "description": "`required` + `maxProperties`",
+          "type": "object",
+          "required": [
+            "a",
+            "b",
+            "c"
+          ],
+          "maxProperties": 10
+        },
+        "5": {
+          "description": "`required`.length conflict with `maxProperties`",
+          "type": "object",
+          "required": [
+            "a",
+            "b",
+            "c"
+          ],
+          "maxProperties": 1,
+          "x-mock-test": {
+            "assertExecSuccess": false
+          }
+        },
+        "6": {
+          "description": "`required` + `properties` + `additionalProperties`",
+          "type": "object",
+          "required": [
+            "a",
+            "b"
+          ],
+          "additionalProperties": {
+            "type": "string"
+          },
+          "properties": {
+            "a": {
+              "type": "boolean"
+            },
+            "b": {
+              "type": "integer"
+            },
+            "c": {
+              "type": "number"
+            },
+            "d": {}
+          },
+          "x-mock-test": {
+            "assertExecSuccess": true,
+            "itMode": 0
+          }
+        },
+        "7": {
+          "description": "`required` + `properties` + `propertyNames.enum`",
+          "type": "object",
+          "required": [
+            "a",
+            "b"
+          ],
+          "additionalProperties": {
+            "type": "string"
+          },
+          "propertyNames": {
+            "enum": [
+              "a",
+              "b",
+              "z"
+            ]
+          },
+          "properties": {
+            "a": {
+              "type": "boolean"
+            },
+            "b": {
+              "type": "integer"
+            },
+            "c": {
+              "type": "number"
+            },
+            "d": {}
+          },
+          "x-mock-test": {
+            "repeat": -1,
+            "assertExecSuccess": true,
+            "itMode": 0
+          }
+        },
+        "8": {
+          "description": "`required` + `properties` + `propertyNames.pattern`",
+          "type": "object",
+          "required": [
+            "a",
+            "b"
+          ],
+          "additionalProperties": {
+            "type": "string"
+          },
+          "propertyNames": {
+            "pattern": "^[ab]"
+          },
+          "properties": {
+            "a": {
+              "type": "boolean"
+            },
+            "b": {
+              "type": "integer"
+            },
+            "c": {
+              "type": "number"
+            },
+            "d": {}
+          },
+          "x-mock-test": {
+            "repeat": -1,
+            "assertExecSuccess": true,
+            "itMode": 0
+          }
+        },
+        "9a": {
+          "description": "`required` + `properties` + `propertyNames.enum` + `propertyNames.pattern`",
+          "type": "object",
+          "required": [
+            "a",
+            "b"
+          ],
+          "additionalProperties": {
+            "type": "string"
+          },
+          "propertyNames": {
+            "enum": [
+              "a",
+              "b",
+              "a1",
+              "a2",
+              "b1",
+              "b2",
+              "c",
+              "c1",
+              "c2"
+            ],
+            "pattern": "^[ab]"
+          },
+          "properties": {
+            "a": {
+              "type": "boolean"
+            },
+            "b": {
+              "type": "integer"
+            },
+            "c": {
+              "type": "number"
+            },
+            "d": {}
+          },
+          "x-mock-test": {
+            "repeat": -1,
+            "assertExecSuccess": true,
+            "itMode": 0
+          }
+        },
+        "9b": {
+          "description": "`required` + `properties` + `propertyNames.enum` + `propertyNames.pattern` + `propertyNames.const`",
+          "type": "object",
+          "required": [
+            "a"
+          ],
+          "additionalProperties": {
+            "type": "string"
+          },
+          "propertyNames": {
+            "const": "a",
+            "enum": [
+              "a",
+              "b",
+              "a1",
+              "a2",
+              "b1",
+              "b2",
+              "c",
+              "c1",
+              "c2"
+            ],
+            "pattern": "^[ab]"
+          },
+          "properties": {
+            "a": {
+              "type": "boolean"
+            },
+            "b": {
+              "type": "integer"
+            },
+            "c": {
+              "type": "number"
+            },
+            "d": {}
+          },
+          "x-mock-test": {
+            "repeat": -1,
+            "assertExecSuccess": true,
+            "itMode": 0
+          }
+        },
+        "10": {
+          "description": "`required` + `properties` + `propertyNames.pattern` + `patternProperties`",
+          "type": "object",
+          "required": [
+            "a",
+            "b"
+          ],
+          "additionalProperties": {
+            "type": "string"
+          },
+          "propertyNames": {
+            "pattern": "^[ab]"
+          },
+          "properties": {
+            "a": {
+              "type": "boolean"
+            },
+            "b": {
+              "type": "integer"
+            },
+            "c": {
+              "type": "number"
+            },
+            "d": {}
+          },
+          "patternProperties": {
+            "^a1": {
+              "type": "string"
+            },
+            "^b1": {
+              "type": "boolean"
+            }
+          },
+          "x-mock-test": {
+            "repeat": -1,
+            "assertExecSuccess": true,
+            "itMode": 0
+          }
+        },
+        "11a": {
+          "description": "`properties` + `dependencies` Property dependencies : a -> b",
+          "type": "object",
+          "minProperties": 2,
+          "maxProperties": 3,
+          "properties": {
+            "a": {
+              "type": "boolean"
+            },
+            "b": {
+              "type": "integer"
+            },
+            "c": {
+              "type": "number"
+            },
+            "d": {}
+          },
+          "dependencies": {
+            "a": [
+              "b"
+            ]
+          },
+          "x-mock-test": {
+            "repeat": -1,
+            "assertExecSuccess": true,
+            "itMode": 0
+          }
+        },
+        "11b": {
+          "description": "`properties` + `dependencies` Property dependencies : a <-> b",
+          "type": "object",
+          "minProperties": 2,
+          "maxProperties": 3,
+          "properties": {
+            "a": {
+              "type": "boolean"
+            },
+            "b": {
+              "type": "integer"
+            },
+            "c": {
+              "type": "number"
+            },
+            "d": {}
+          },
+          "dependencies": {
+            "a": [
+              "b"
+            ],
+            "b": [
+              "a"
+            ]
+          },
+          "x-mock-test": {
+            "repeat": -1,
+            "assertExecSuccess": true,
+            "itMode": 0
+          }
+        },
+        "11c": {
+          "description": "`properties` + `dependencies` Property dependencies : a -> b -> c -> others",
+          "type": "object",
+          "properties": {
+            "a": {
+              "type": "boolean"
+            },
+            "b": {
+              "type": "integer"
+            },
+            "c": {
+              "type": "number"
+            },
+            "d": {}
+          },
+          "dependencies": {
+            "a": [
+              "b"
+            ],
+            "b": [
+              "c"
+            ],
+            "c": [
+              "M1",
+              "M2"
+            ]
+          },
+          "x-mock-test": {
+            "repeat": -1,
+            "assertExecSuccess": true,
+            "itMode": 0
+          }
+        },
+        "11d": {
+          "description": "`properties` + `dependencies` Schema dependencies : a -> b",
+          "type": "object",
+          "minProperties": 2,
+          "maxProperties": 6,
+          "properties": {
+            "b": {
+              "type": "integer"
+            },
+            "a": {
+              "type": "boolean"
+            }
+          },
+          "dependencies": {
+            "a": {
+              "properties": {
+                "b": {
+                  "minimum": -10,
+                  "maximum": 1
+                }
+              },
+              "required": [
+                "b"
+              ]
+            }
+          },
+          "x-mock-test": {
+            "repeat": -1,
+            "assertExecSuccess": true,
+            "itMode": 0
+          }
+        },
+        "12": {
+          "description": "`required` + `patternProperties`",
+          "type": "object",
+          "required": [
+            "a",
+            "b"
+          ],
+          "patternProperties": {
+            "^1": {
+              "type": "number"
+            },
+            "^2": {
+              "type": "boolean"
+            }
+          },
+          "x-mock-test": {
+            "repeat": -1,
+            "assertExecSuccess": true,
+            "itMode": 0
+          }
+        }
+      }
+    },
+    "array": {
+      "description": "array",
+      "properties": {
+        "1": {
+          "description": "base",
+          "type": "array"
+        },
+        "2": {
+          "description": "`minItems`",
+          "type": "array",
+          "minItems": 3,
+          "x-mock-test": {
+            "repeat": -1,
+            "assertExecSuccess": true,
+            "itMode": 0
+          }
+        },
+        "3": {
+          "description": "`minItems`+`maxItems` conflict check",
+          "type": "array",
+          "minItems": 10,
+          "maxItems": 3,
+          "x-mock-test": {
+            "repeat": 1,
+            "assertExecSuccess": false,
+            "itMode": 0
+          }
+        },
+        "4": {
+          "description": "`items` List validation, `uniqueItems`===`false`",
+          "type": "array",
+          "minItems": 2,
+          "uniqueItems": false,
+          "items": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 3
+          },
+          "x-mock-test": {
+            "repeat": -1,
+            "assertExecSuccess": true,
+            "itMode": 0
+          }
+        },
+        "5": {
+          "description": "`items` List validation, `uniqueItems`===`true`",
+          "type": "array",
+          "minItems": 2,
+          "uniqueItems": true,
+          "items": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 4
+          },
+          "x-mock-test": {
+            "repeat": -1,
+            "assertExecSuccess": true,
+            "itMode": 0
+          }
+        },
+        "6": {
+          "description": "`items` List validation, `uniqueItems`===`false`",
+          "type": "array",
+          "minItems": 2,
+          "items": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 4
+          },
+          "x-mock-test": {
+            "repeat": -1,
+            "assertExecSuccess": true,
+            "itMode": 0
+          }
+        },
+        "7": {
+          "description": "`items` Tuple validation, `uniqueItems`===`false`",
+          "type": "array",
+          "minItems": 2,
+          "items": [
+            {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 4
+            },
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "string"
+            }
+          ],
+          "x-mock-test": {
+            "repeat": -1,
+            "assertExecSuccess": true,
+            "itMode": 0
+          }
+        },
+        "8": {
+          "description": "`items` Tuple validation, `uniqueItems`===`true`, `additionalItems`===`false`",
+          "type": "array",
+          "minItems": 3,
+          "uniqueItems": true,
+          "additionalItems": false,
+          "items": [
+            {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 4
+            },
+            {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 4
+            },
+            {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 4
+            },
+            {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 4
+            }
+          ],
+          "x-mock-test": {
+            "repeat": -1,
+            "assertExecSuccess": true,
+            "itMode": 0
+          }
+        },
+        "9": {
+          "description": "`items` Tuple validation, `uniqueItems`===`true`, `additionalItems` `format`===`email`",
+          "type": "array",
+          "minItems": 2,
+          "uniqueItems": true,
+          "additionalItems": {
+            "type": "string",
+            "format": "email"
+          },
+          "items": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "boolean"
+            }
+          ],
+          "x-mock-test": {
+            "repeat": -1,
+            "assertExecSuccess": true,
+            "itMode": 0
+          }
+        },
+        "10a": {
+          "description": "`items` `contains`",
+          "type": "array",
+          "contains": {
+            "type": "null"
+          },
+          "x-mock-test": {
+            "repeat": -1,
+            "assertExecSuccess": true,
+            "itMode": 0
+          }
+        },
+        "10b": {
+          "description": "`items` `contains` + `additionalItems`",
+          "type": "array",
+          "minItems": 2,
+          "additionalItems": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 100005
+          },
+          "contains": {
+            "type": "integer",
+            "minimum": 100000,
+            "maximum": 100003
+          },
+          "items": {
+            "type": "integer"
+          },
+          "x-mock-test": {
+            "repeat": -1,
+            "assertExecSuccess": true,
+            "itMode": 0
+          }
+        }
+      }
+    },
+    "AllOf": {
+      "description": "allOf",
+      "type": "object",
+      "properties": {
+        "type-3": {
+          "description": "`type` n-Level",
+          "type": [
+            "integer",
+            "string"
+          ],
+          "allOf": [
+            {
+              "allOf": [
+                {
+                  "type": "string",
+                  "allOf": [
+                    {
+                      "type": "string",
+                      "allOf": [
+                        {
+                          "type": "string",
+                          "allOf": [
+                            {
+                              "type": "string",
+                              "allOf": [
+                                {
+                                  "type": "string"
+                                }
+                              ]
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ],
+          "x-mock-test": {
+            "repeat": -1,
+            "assertExecSuccess": true,
+            "assertValidSuccess": true,
+            "itMode": 0
+          }
+        },
+        "type-4": {
+          "description": "`type` n-Level conflict",
+          "type": [
+            "integer",
+            "string"
+          ],
+          "allOf": [
+            {
+              "allOf": [
+                {
+                  "type": "string",
+                  "allOf": [
+                    {
+                      "type": "string",
+                      "allOf": [
+                        {
+                          "type": "string",
+                          "allOf": [
+                            {
+                              "type": "string",
+                              "allOf": [
+                                {
+                                  "type": "integer"
+                                }
+                              ]
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ],
+          "x-mock-test": {
+            "repeat": -1,
+            "assertExecSuccess": false,
+            "assertValidSuccess": true,
+            "itMode": 0
+          }
+        },
+        "const-3": {
+          "description": "`const` n-Level",
+          "const": "string",
+          "allOf": [
+            {
+              "allOf": [
+                {
+                  "const": "string",
+                  "allOf": [
+                    {
+                      "allOf": [
+                        {
+                          "allOf": [
+                            {
+                              "allOf": [
+                                {
+                                  "const": "string"
+                                }
+                              ]
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ],
+          "x-mock-test": {
+            "repeat": -1,
+            "assertExecSuccess": true,
+            "assertValidSuccess": true,
+            "itMode": 0
+          }
+        },
+        "const-4": {
+          "description": "`const` n-Level conflict",
+          "const": "1",
+          "allOf": [
+            {
+              "allOf": [
+                {
+                  "allOf": [
+                    {
+                      "const": "1",
+                      "allOf": [
+                        {
+                          "allOf": [
+                            {
+                              "allOf": [
+                                {
+                                  "const": "2"
+                                }
+                              ]
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ],
+          "x-mock-test": {
+            "repeat": -1,
+            "assertExecSuccess": false,
+            "assertValidSuccess": true,
+            "itMode": 0
+          }
+        },
+        "enum-3": {
+          "description": "`enum` n-Level",
+          "enum": [
+            1,
+            2,
+            3,
+            4,
+            5
+          ],
+          "allOf": [
+            {
+              "allOf": [
+                {
+                  "enum": [
+                    1,
+                    2,
+                    3,
+                    4,
+                    5,
+                    6,
+                    7
+                  ],
+                  "allOf": [
+                    {
+                      "allOf": [
+                        {
+                          "allOf": [
+                            {
+                              "allOf": [
+                                {
+                                  "enum": [
+                                    -1,
+                                    0,
+                                    1,
+                                    3,
+                                    4,
+                                    5
+                                  ]
+                                }
+                              ]
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "enum": [
+                    1,
+                    3,
+                    5
+                  ]
+                }
+              ]
+            }
+          ],
+          "x-mock-test": {
+            "repeat": -1,
+            "assertExecSuccess": true,
+            "assertValidSuccess": true,
+            "itMode": 0
+          }
+        },
+        "enum-4": {
+          "description": "`enum` n-Level conflict",
+          "allOf": [
+            {
+              "allOf": [
+                {
+                  "allOf": [
+                    {
+                      "allOf": [
+                        {
+                          "allOf": [
+                            {
+                              "allOf": [
+                                {
+                                  "enum": [
+                                    1,
+                                    3,
+                                    5
+                                  ]
+                                }
+                              ]
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "enum": [
+                2,
+                4,
+                6
+              ]
+            }
+          ],
+          "x-mock-test": {
+            "repeat": -1,
+            "assertExecSuccess": false,
+            "assertValidSuccess": true,
+            "itMode": 0
+          }
+        },
+        "size-1": {
+          "description": "`number`:`minimum`+`maximum` 1-Level",
+          "type": "number",
+          "minimum": 0,
+          "maximum": 10,
+          "allOf": [
+            {
+              "minimum": -10,
+              "maximum": 20
+            },
+            {
+              "minimum": 3,
+              "maximum": 7
+            }
+          ],
+          "x-mock-test": {
+            "repeat": -1,
+            "assertExecSuccess": true,
+            "itMode": 0
+          }
+        },
+        "size-2": {
+          "description": "`integer`:`exclusiveMinimum`+`exclusiveMaximum` 1-Level conflict",
+          "type": "integer",
+          "exclusiveMinimum": 0,
+          "exclusiveMaximum": 10,
+          "allOf": [
+            {
+              "minimum": -10,
+              "maximum": -1
+            },
+            {
+              "minimum": 3,
+              "maximum": 7
+            }
+          ],
+          "x-mock-test": {
+            "repeat": -1,
+            "assertExecSuccess": false,
+            "itMode": 0
+          }
+        },
+        "size-3": {
+          "description": "`string`:`minLength`+`maxLength` n-Level",
+          "type": "string",
+          "minLength": 0,
+          "maxLength": 10,
+          "allOf": [
+            {
+              "allOf": [
+                {
+                  "allOf": [
+                    {
+                      "minLength": 3,
+                      "maxLength": 7,
+                      "allOf": [
+                        {
+                          "minLength": 1,
+                          "maxLength": 5
+                        }
+                      ]
+                    }
+                  ],
+                  "minLength": 3,
+                  "maxLength": 7
+                }
+              ]
+            },
+            {
+              "minLength": 0,
+              "maxLength": 17
+            }
+          ],
+          "x-mock-test": {
+            "repeat": -1,
+            "assertExecSuccess": true,
+            "itMode": 0
+          }
+        },
+        "size-4": {
+          "description": "`array`:`minItems`+`maxItems` n-Level",
+          "type": "array",
+          "minItems": 0,
+          "maxItems": 10,
+          "allOf": [
+            {
+              "allOf": [
+                {
+                  "allOf": [
+                    {
+                      "minItems": 3,
+                      "maxItems": 7,
+                      "allOf": [
+                        {
+                          "minItems": 1,
+                          "maxItems": 5
+                        }
+                      ]
+                    }
+                  ],
+                  "minItems": 3,
+                  "maxItems": 7
+                }
+              ]
+            },
+            {
+              "minItems": 0,
+              "maxItems": 17
+            }
+          ],
+          "x-mock-test": {
+            "repeat": -1,
+            "assertExecSuccess": true,
+            "itMode": 0
+          }
+        },
+        "size-5": {
+          "description": "`object`:`minProperties`+`maxProperties` n-Level",
+          "type": "object",
+          "minProperties": 0,
+          "maxProperties": 10,
+          "allOf": [
+            {
+              "allOf": [
+                {
+                  "allOf": [
+                    {
+                      "minProperties": 3,
+                      "maxProperties": 7,
+                      "allOf": [
+                        {
+                          "minProperties": 1,
+                          "maxProperties": 5
+                        }
+                      ]
+                    }
+                  ],
+                  "minProperties": 3,
+                  "maxProperties": 7
+                }
+              ]
+            },
+            {
+              "minProperties": 0,
+              "maxProperties": 17
+            }
+          ],
+          "x-mock-test": {
+            "repeat": -1,
+            "assertExecSuccess": true,
+            "itMode": 0
+          }
+        },
+        "number-2": {
+          "description": "`number` : `multipleOf` n-level",
+          "type": "number",
+          "minimum": -1000,
+          "maximum": 1000,
+          "multipleOf": 2,
+          "allOf": [
+            {
+              "multipleOf": 3,
+              "allOf": [
+                {
+                  "multipleOf": 5
+                },
+                {
+                  "multipleOf": 6,
+                  "allOf": [
+                    {
+                      "multipleOf": 7,
+                      "allOf": [
+                        {
+                          "multipleOf": 8
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "multipleOf": 4
+            }
+          ]
+        },
+        "string-1": {
+          "description": "`string` : `format` n-level",
+          "type": "string",
+          "format": "email",
+          "allOf": [
+            {
+              "allOf": [
+                {},
+                {
+                  "allOf": [
+                    {
+                      "allOf": [
+                        {
+                          "format": "email"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        "string-2": {
+          "description": "`string` : `format` n-level conflict",
+          "type": "string",
+          "format": "email",
+          "allOf": [
+            {
+              "format": "email",
+              "allOf": [
+                {},
+                {
+                  "allOf": [
+                    {
+                      "allOf": [
+                        {
+                          "format": "ip"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "format": "format"
+            }
+          ],
+          "x-mock-test": {
+            "repeat": -1,
+            "assertExecSuccess": false,
+            "itMode": 0
+          }
+        },
+        "array-1": {
+          "description": "`array` : `uniqueItems` n-level",
+          "type": "array",
+          "uniqueItems": true,
+          "allOf": [
+            {
+              "allOf": [
+                {
+                  "allOf": [
+                    {
+                      "allOf": [
+                        {
+                          "uniqueItems": true
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "uniqueItems": true
+            }
+          ],
+          "x-mock-test": {
+            "repeat": -1,
+            "assertExecSuccess": true,
+            "itMode": 0
+          }
+        },
+        "array-2": {
+          "description": "`array` : `uniqueItems` n-level conflict",
+          "type": "array",
+          "uniqueItems": true,
+          "allOf": [
+            {
+              "allOf": [
+                {
+                  "allOf": [
+                    {
+                      "allOf": [
+                        {
+                          "uniqueItems": false
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "uniqueItems": true
+            }
+          ],
+          "x-mock-test": {
+            "repeat": -1,
+            "assertExecSuccess": false,
+            "itMode": 0
+          }
+        },
+        "array-3": {
+          "description": "`array` : `contains` n-level",
+          "type": "array",
+          "contains": {
+            "type": "number"
+          },
+          "allOf": [
+            {
+              "allOf": [
+                {
+                  "allOf": [
+                    {
+                      "allOf": [
+                        {
+                          "contains": {
+                            "type": "boolean"
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "contains": {
+                    "type": "null"
+                  }
+                }
+              ]
+            },
+            {
+              "contains": {
+                "type": "string"
+              }
+            }
+          ],
+          "x-mock-test": {
+            "repeat": -1,
+            "assertExecSuccess": true,
+            "itMode": 0
+          }
+        },
+        "array-4": {
+          "description": "`array` : `additionalItems` n-level",
+          "type": "array",
+          "items": [
+            {
+              "type": [
+                "boolean",
+                "number"
+              ]
+            }
+          ],
+          "allOf": [
+            {
+              "additionalItems": {
+                "type": "number",
+                "const": 1
+              }
+            }
+          ],
+          "x-mock-test": {
+            "repeat": -1,
+            "assertExecSuccess": true,
+            "itMode": 0
+          }
+        },
+        "array-5": {
+          "description": "`object` : `required` n-level",
+          "type": "object",
+          "required": [
+            "a",
+            "b"
+          ],
+          "allOf": [
+            {
+              "required": [
+                "a",
+                "c"
+              ],
+              "allOf": [
+                {
+                  "allOf": [
+                    {
+                      "required": [
+                        "1",
+                        "2"
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ],
+          "x-mock-test": {
+            "repeat": -1,
+            "assertExecSuccess": true,
+            "itMode": 0
+          }
+        },
+        "array-6": {
+          "description": "`object` : `properties` n-level",
+          "type": "object",
+          "minProperties": 6,
+          "properties": {
+            "a": {
+              "type": "number"
+            },
+            "b": {
+              "type": "integer"
+            }
+          },
+          "allOf": [
+            {
+              "properties": {
+                "a": {
+                  "minimum": 0,
+                  "maximum": 30,
+                  "multipleOf": 2
+                }
+              },
+              "allOf": [
+                {
+                  "allOf": [
+                    {
+                      "properties": {
+                        "d": {
+                          "type": "object",
+                          "allOf": [
+                            {
+                              "properties": {
+                                "d1": {
+                                  "type": "integer"
+                                }
+                              }
+                            },
+                            {
+                              "properties": {
+                                "d2": {
+                                  "type": "boolean"
+                                }
+                              }
+                            }
+                          ]
+                        }
+                      }
+                    }
+                  ]
+                }
+              ]
+            }
+          ],
+          "x-mock-test": {
+            "repeat": -1,
+            "assertExecSuccess": true,
+            "itMode": 0
+          }
+        },
+        "array-7": {
+          "description": "`object` : `properties` n-level , `type` conflict",
+          "type": "object",
+          "minProperties": 6,
+          "properties": {
+            "a": {
+              "type": "number"
+            },
+            "b": {
+              "type": "integer"
+            }
+          },
+          "allOf": [
+            {
+              "properties": {
+                "a": {
+                  "minimum": 0,
+                  "maximum": 30,
+                  "multipleOf": 2
+                }
+              },
+              "allOf": [
+                {
+                  "allOf": [
+                    {
+                      "properties": {
+                        "d": {
+                          "type": "object",
+                          "allOf": [
+                            {
+                              "properties": {
+                                "d1": {
+                                  "type": "integer"
+                                }
+                              }
+                            },
+                            {
+                              "properties": {
+                                "d2": {
+                                  "type": "boolean"
+                                }
+                              }
+                            }
+                          ]
+                        }
+                      }
+                    },
+                    {
+                      "properties": {
+                        "b": {
+                          "type": "null"
+                        }
+                      }
+                    }
+                  ]
+                }
+              ]
+            }
+          ],
+          "x-mock-test": {
+            "repeat": -1,
+            "assertExecSuccess": false,
+            "itMode": 0
+          }
+        },
+        "array-8a": {
+          "description": "`object` : `propertyNames.const` n-level",
+          "type": "object",
+          "allOf": [
+            {
+              "allOf": [
+                {
+                  "allOf": [
+                    {
+                      "propertyNames": {
+                        "const": "b"
+                      }
+                    }
+                  ]
+                }
+              ]
+            }
+          ],
+          "x-mock-test": {
+            "repeat": -1,
+            "assertExecSuccess": true,
+            "itMode": 0
+          }
+        },
+        "array-8b": {
+          "description": "`object` : `propertyNames.const` n-level conflict",
+          "type": "object",
+          "propertyNames": {
+            "const": "a"
+          },
+          "allOf": [
+            {
+              "propertyNames": {
+                "const": "a"
+              }
+            },
+            {
+              "allOf": [
+                {
+                  "allOf": [
+                    {
+                      "propertyNames": {
+                        "const": "b"
+                      }
+                    }
+                  ]
+                }
+              ]
+            }
+          ],
+          "x-mock-test": {
+            "repeat": -1,
+            "assertExecSuccess": false,
+            "itMode": 0
+          }
+        },
+        "array-9": {
+          "description": "`object` : `propertyNames.enum` n-level",
+          "type": "object",
+          "propertyNames": {
+            "enum": [
+              "0",
+              "1",
+              "2",
+              "3",
+              "4",
+              "5",
+              "6",
+              "7",
+              "8",
+              "9"
+            ]
+          },
+          "allOf": [
+            {
+              "propertyNames": {
+                "enum": [
+                  "0",
+                  "2",
+                  "4",
+                  "6",
+                  "8"
+                ]
+              }
+            },
+            {
+              "allOf": [
+                {
+                  "allOf": [
+                    {
+                      "propertyNames": {
+                        "enum": [
+                          "2",
+                          "6",
+                          "10"
+                        ]
+                      }
+                    }
+                  ]
+                }
+              ]
+            }
+          ],
+          "x-mock-test": {
+            "repeat": -1,
+            "assertExecSuccess": true,
+            "itMode": 0
+          }
+        },
+        "array-10": {
+          "description": "`object` : `propertyNames.pattern` n-level",
+          "type": "object",
+          "propertyNames": {
+            "pattern": "^a"
+          },
+          "allOf": [
+            {
+              "propertyNames": {
+                "pattern": "^a.+?b$"
+              }
+            },
+            {
+              "allOf": [
+                {
+                  "allOf": [
+                    {
+                      "propertyNames": {
+                        "pattern": "a.+?"
+                      }
+                    }
+                  ]
+                }
+              ]
+            }
+          ],
+          "x-mock-test": {
+            "repeat": -1,
+            "assertExecSuccess": true,
+            "itMode": 0
+          }
+        },
+        "array-11": {
+          "description": "`object` : `dependencies` both is `array` n-level",
+          "type": "object",
+          "dependencies": {
+            "a": [
+              "b"
+            ]
+          },
+          "allOf": [
+            {
+              "dependencies": {
+                "a": [
+                  "c"
+                ]
+              }
+            }
+          ],
+          "x-mock-test": {
+            "repeat": -1,
+            "assertExecSuccess": true,
+            "itMode": 0
+          }
+        },
+        "array-12": {
+          "description": "`object` : `dependencies` both is `schema` n-level",
+          "type": "object",
+          "required": [
+            "a"
+          ],
+          "dependencies": {
+            "a": {
+              "required": [
+                "b"
+              ]
+            }
+          },
+          "allOf": [
+            {
+              "dependencies": {
+                "a": {
+                  "required": [
+                    "c"
+                  ]
+                }
+              },
+              "allOf": [
+                {
+                  "allOf": [
+                    {
+                      "allOf": [
+                        {
+                          "dependencies": {
+                            "a": {
+                              "properties": {
+                                "b": {
+                                  "const": "nihao"
+                                }
+                              }
+                            }
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "allOf": [
+                {
+                  "allOf": [
+                    {
+                      "allOf": [
+                        {
+                          "allOf": [
+                            {
+                              "dependencies": {
+                                "a": {
+                                  "required": [
+                                    "d"
+                                  ]
+                                }
+                              }
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ],
+          "x-mock-test": {
+            "repeat": -1,
+            "assertExecSuccess": true,
+            "itMode": 0
+          }
+        },
+        "array-13": {
+          "description": "`object` : `dependencies` : `array`+`schema`+`array` n-level",
+          "type": "object",
+          "required": [
+            "a"
+          ],
+          "dependencies": {
+            "a": [
+              "b"
+            ]
+          },
+          "allOf": [
+            {
+              "dependencies": {
+                "a": {
+                  "required": [
+                    "c"
+                  ]
+                }
+              },
+              "allOf": [
+                {
+                  "allOf": [
+                    {
+                      "allOf": [
+                        {
+                          "dependencies": {
+                            "a": {
+                              "properties": {
+                                "b": {
+                                  "enum": [
+                                    1,
+                                    3,
+                                    4
+                                  ]
+                                }
+                              }
+                            }
+                          },
+                          "allOf": [
+                            {
+                              "dependencies": {
+                                "a": [
+                                  "e"
+                                ]
+                              },
+                              "allOf": [
+                                {
+                                  "dependencies": {
+                                    "a": {
+                                      "properties": {
+                                        "b": {
+                                          "enum": [
+                                            1,
+                                            2,
+                                            3,
+                                            4,
+                                            5,
+                                            6
+                                          ]
+                                        }
+                                      },
+                                      "required": [
+                                        "b"
+                                      ]
+                                    }
+                                  }
+                                }
+                              ]
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "allOf": [
+                {
+                  "allOf": [
+                    {
+                      "allOf": [
+                        {
+                          "allOf": [
+                            {
+                              "dependencies": {
+                                "a": [
+                                  "d"
+                                ]
+                              }
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ],
+          "x-mock-test": {
+            "repeat": -1,
+            "assertExecSuccess": true,
+            "itMode": 0
+          }
+        },
+        "array-14": {
+          "description": "`object` : `additionalProperties` n-level",
+          "type": "object",
+          "properties": {
+            "a": {
+              "type": "boolean"
+            }
+          },
+          "additionalProperties": {
+            "type": "integer"
+          },
+          "allOf": [
+            {
+              "additionalProperties": {
+                "minimum": 0
+              }
+            },
+            {
+              "allOf": [
+                {
+                  "allOf": [
+                    {
+                      "additionalProperties": {
+                        "maximum": 10
+                      }
+                    },
+                    {
+                      "allOf": [
+                        {
+                          "additionalProperties": {
+                            "enum": [
+                              1,
+                              4,
+                              7,
+                              9,
+                              10,
+                              50,
+                              100,
+                              220
+                            ]
+                          },
+                          "allOf": [
+                            {
+                              "additionalProperties": {
+                                "enum": [
+                                  -100,
+                                  -20,
+                                  -3,
+                                  7,
+                                  8,
+                                  10,
+                                  1
+                                ]
+                              }
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ],
+          "x-mock-test": {
+            "repeat": -1,
+            "assertExecSuccess": true,
+            "itMode": 1
+          }
+        },
+        "array-15": {
+          "description": "`object` : `patternProperties` n-level",
+          "type": "object",
+          "properties": {
+            "a": {
+              "type": "boolean"
+            }
+          },
+          "patternProperties": {
+            "^1": {
+              "type": "boolean"
+            }
+          },
+          "allOf": [
+            {
+              "patternProperties": {
+                "^2": {
+                  "type": "number"
+                }
+              }
+            },
+            {
+              "allOf": [
+                {
+                  "allOf": [
+                    {
+                      "patternProperties": {
+                        "^2": {
+                          "minimum": -5
+                        },
+                        "^3": {
+                          "type": "string"
+                        }
+                      },
+                      "allOf": [
+                        {
+                          "patternProperties": {
+                            "^2": {
+                              "maximum": 4
+                            }
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ],
+          "x-mock-test": {
+            "repeat": -1,
+            "assertExecSuccess": true,
+            "itMode": 0
+          }
+        }
+      }
+    },
+    "AnyOf": {
+      "description": "anyOf",
+      "type": "object",
+      "properties": {
+        "1": {
+          "description": "`anyOf` 1-Level",
+          "type": "integer",
+          "enum": [
+            2,
+            4,
+            -3
+          ],
+          "anyOf": [
+            {
+              "enum": [
+                1,
+                3,
+                5,
+                7,
+                9
+              ]
+            },
+            {
+              "enum": [
+                0,
+                2,
+                4,
+                6,
+                8
+              ]
+            }
+          ],
+          "x-mock-test": {
+            "repeat": -1,
+            "assertExecSuccess": true,
+            "itMode": 0
+          }
+        },
+        "2": {
+          "description": "`anyOf` n-Level",
+          "type": "integer",
+          "enum": [
+            2,
+            4,
+            -3
+          ],
+          "anyOf": [
+            {
+              "anyOf": [
+                {
+                  "anyOf": [
+                    {
+                      "enum": [
+                        1,
+                        3,
+                        5,
+                        7,
+                        9,
+                        -3,
+                        4,
+                        true
+                      ],
+                      "anyOf": [
+                        {
+                          "enum": [
+                            0
+                          ]
+                        },
+                        {
+                          "enum": [
+                            2,
+                            4,
+                            10,
+                            15,
+                            20
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "enum": [
+                1,
+                3,
+                5,
+                7,
+                9
+              ]
+            },
+            {
+              "enum": [
+                0,
+                2,
+                4,
+                6,
+                8
+              ]
+            }
+          ],
+          "x-mock-test": {
+            "repeat": -1,
+            "assertExecSuccess": true,
+            "itMode": 0
+          }
+        },
+        "3": {
+          "description": "`anyOf` n-Level conflict",
+          "type": "integer",
+          "enum": [
+            2,
+            4,
+            -3
+          ],
+          "anyOf": [
+            {
+              "anyOf": [
+                {
+                  "anyOf": [
+                    {
+                      "enum": [
+                        10
+                      ],
+                      "anyOf": [
+                        {
+                          "enum": [
+                            0
+                          ]
+                        },
+                        {
+                          "enum": [
+                            null
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "enum": [
+                null
+              ]
+            },
+            {
+              "enum": [
+                null
+              ]
+            }
+          ],
+          "x-mock-test": {
+            "repeat": -1,
+            "assertExecSuccess": false,
+            "itMode": 0
+          }
+        }
+      }
+    },
+    "OneOf": {
+      "description": "oneOf",
+      "type": "object",
+      "properties": {
+        "4": {
+          "description": "`oneOf` 1-Level",
+          "type": "integer",
+          "enum": [
+            2,
+            4,
+            -3
+          ],
+          "oneOf": [
+            {
+              "enum": [
+                1,
+                3,
+                5,
+                7,
+                9
+              ]
+            },
+            {
+              "enum": [
+                0,
+                2,
+                4,
+                6,
+                8
+              ]
+            }
+          ],
+          "x-mock-test": {
+            "repeat": -1,
+            "assertExecSuccess": true,
+            "itMode": 0
+          }
+        },
+        "5": {
+          "description": "`oneOf` n-Level",
+          "oneOf": [
+            {
+              "oneOf": [
+                {
+                  "oneOf": [
+                    {
+                      "oneOf": [
+                        {
+                          "type": "integer"
+                        },
+                        {
+                          "type": "boolean"
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "string"
+            },
+            {
+              "type": "array"
+            }
+          ],
+          "x-mock-test": {
+            "repeat": -1,
+            "assertExecSuccess": true,
+            "itMode": 0
+          }
+        }
+      }
+    }
+  }
+}
