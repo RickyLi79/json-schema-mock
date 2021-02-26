@@ -1,8 +1,18 @@
+# @rickyli79/json-schema-mock
+[![NPM version][npm-image]][npm-url]
+[![npm download][download-image]][download-url]
+![NPM](https://img.shields.io/npm/l/@rickyli79/json-schema-mock?style=flat-square)
+
+[npm-image]: https://img.shields.io/npm/v/@rickyli79/json-schema-mock.svg?style=flat-square
+[npm-url]: https://npmjs.org/package/@rickyli79/json-schema-mock
+[download-image]: https://img.shields.io/npm/dm/@rickyli79/json-schema-mock.svg?style=flat-square
+[download-url]: https://npmjs.org/package/@rickyli79/json-schema-mock
+
 English | [简体中文](./README.zh-CN.md)
 
-# JSON Schema Mock
+---
 
-Generate data base on given [JSON Schema draft 7](http://json-schema.org/understanding-json-schema/index.html)
+Generate data base on given [JSON Schema](http://json-schema.org/understanding-json-schema/index.html)
 
 ## Features
 

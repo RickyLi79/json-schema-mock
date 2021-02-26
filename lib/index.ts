@@ -66,7 +66,7 @@ export class SchemaMock {
         if (typeof jspath === "string") {
             jspath = { jspath };
         }
-        const opt: MockOptions = Object.assign({ path: "", skipMockAtts: [], requiredOnly: false }, jspath);
+        const opt: MockOptions = Object.assign({ path: "", skipMockAtts: [], requiredOnly: false, defaultAdditionalItems: true }, jspath);
         const node = JsonUtil.getValueByJSPath(this.analysisSchema, opt.jspath!);
         return SchemaMock.mock(node, opt);
     }
@@ -110,7 +110,7 @@ export class SchemaMock {
 
         const _options: MockOptions = Object.assign(
             {
-                skipMockAtts: [], requiredOnly: false
+                skipMockAtts: [], requiredOnly: false, defaultAdditionalItems: true
             }, options);
 
         const type = Array.isArray(schema.type) ? Random.pick(schema.type) : schema.type ?? Random.pick(TypesToRandom);
@@ -173,7 +173,7 @@ export class SchemaMock {
                             iItem = Random.pick(RandomTypeArr)();
                         }
                         else {
-                            iItem = this.mock(iSchema);
+                            iItem = this.mock(iSchema, _options);
                         }
 
                         //#endregion
@@ -227,7 +227,7 @@ export class SchemaMock {
                 {
                     let obj: { [key: string]: any } = {};
 
-                    let { min, max, required, requiredLen, allowKeys, allowAdditional, keyPatterns, allowPattern, depkeys, depSchemas } = analysisObject(schema);
+                    let { min, max, required, requiredLen, allowKeys, allowAdditional, keyPatterns, allowPattern, depkeys, depSchemas } = analysisObject(schema, options.defaultAdditionalItems ?? true);
 
                     if (_options.requiredOnly) {
                         min = max = requiredLen;
@@ -332,7 +332,7 @@ export class SchemaMock {
                                         continue;
                                     }
                                     else if (depSchemas[iKey] !== undefined) {
-                                        const tmp = this.mock(depSchemas[iKey], { ...options, requiredOnly: true });
+                                        const tmp = this.mock(depSchemas[iKey], { ..._options, requiredOnly: true });
                                         Object.assign(obj, tmp);
                                         counter += Object.keys(tmp).length;
                                         break;
@@ -341,7 +341,7 @@ export class SchemaMock {
                                         // }
                                     }
                                     else if (properties[iKey] !== undefined) {
-                                        value = this.mock(properties[iKey], options);
+                                        value = this.mock(properties[iKey], _options);
                                     }
                                     else {
                                         if (allowPattern && keyPatterns !== undefined) {
@@ -356,7 +356,7 @@ export class SchemaMock {
 
                                         if (value === undefined) {
                                             if (ArrayUtil.isObjectNotArray(schema.additionalProperties)) {
-                                                value = this.mock(<SchemaExt>schema.additionalProperties, options);
+                                                value = this.mock(<SchemaExt>schema.additionalProperties, _options);
                                             }
                                             else if (schema.additionalProperties ?? true) {
                                                 value = Random.pick(arr)();
@@ -604,6 +604,8 @@ export type MockOptions = {
      * if `true`, `object` data will only mock propertis in `required`
      */
     requiredOnly: boolean;
+
+    defaultAdditionalItems: boolean;
 }
 
 // export type MockResult = {

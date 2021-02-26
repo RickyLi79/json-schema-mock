@@ -1,8 +1,9 @@
 import { AssertionError } from "assert";
 import jsonschema from "jsonschema";
 import _ from "lodash";
-import { SchemaMock } from "../src";
-import { JsonUtil } from "../src/utils/JsonUtil";
+import { SchemaMock } from "../lib";
+import { JsonUtil } from "../lib/utils/JsonUtil";
+
 
 class NodeTestStoreStatic {
 
@@ -51,7 +52,7 @@ class NodeTestStoreStatic {
             const orgSchema = _.cloneDeep(schema);
             try {
                 for (let i = 0; i < _options.repeat; i++) {
-                    const re = this.ms.mock({ jspath, skipMockAtts: _options.skipMockAtts });
+                    const re = this.ms.mock({ jspath, skipMockAtts: _options.skipMockAtts, defaultAdditionalItems:false });
                     if (re === undefined) {
                         throw new AssertionError({
                             message: `[#${i}] ${re}`,

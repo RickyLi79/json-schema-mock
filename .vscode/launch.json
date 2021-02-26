@@ -11,16 +11,18 @@
             "cwd": "${workspaceRoot}",
             "runtimeExecutable": "npm",
             "windows": {
-                "runtimeExecutable": "npm.cmd"
+              "runtimeExecutable": "npm.cmd"
             },
             "runtimeArgs": [
-                "run",
-                "mocha:debug"
+              "run",
+              "mocha:debug"
             ],
+            "protocol": "auto",
+            "restart": false,
+            "port": 9229,
+            "autoAttachChildProcesses": true,
             "console": "internalConsole",
-            "internalConsoleOptions": "openOnSessionStart",
-            "protocol": "inspector",
-            "sourceMaps": true,
-        },
+            "internalConsoleOptions": "openOnSessionStart"
+          },
     ]
 }

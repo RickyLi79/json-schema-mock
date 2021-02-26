@@ -17,7 +17,7 @@ export const RandomTypeArr = [
 
 export const TypesToRandom = ["string", "boolean", "integer", "number"];
 
-export function analysisObject(schema: SchemaExt): AnalysisObjectResult {
+export function analysisObject(schema: SchemaExt, defaultAdditionalItems: boolean): AnalysisObjectResult {
     if (schema[AnalysisMarkName]![AnalysisMarkEnum.Object] === undefined) {
 
         let min = schema.minProperties ?? 0;
@@ -29,6 +29,7 @@ export function analysisObject(schema: SchemaExt): AnalysisObjectResult {
 
         let allowKeys: string[] | undefined;
         let allowAdditional: boolean
+        let fixAdditional: boolean = false;
 
         // let properties = schema.properties;
         // let propertyKeys = properties !== undefined ? Object.keys(properties) : [];
@@ -38,6 +39,7 @@ export function analysisObject(schema: SchemaExt): AnalysisObjectResult {
         if (ArrayUtil.isObjectNotArray(schema.propertyNames) && (<SchemaExt>schema.propertyNames)!.const !== undefined) {
             allowKeys = [(<SchemaExt>schema.propertyNames).const];
             allowAdditional = false;
+            fixAdditional = true;
             keyPatterns = [];
             allowPattern = false;
 
@@ -116,7 +118,7 @@ export function analysisObject(schema: SchemaExt): AnalysisObjectResult {
 
                     allowKeys = tmpKeys;
                     allowAdditional = pn2.enum === undefined ? allowAdditional : false;
-
+                    fixAdditional = true;
                 }
 
             }
@@ -149,6 +151,12 @@ export function analysisObject(schema: SchemaExt): AnalysisObjectResult {
                 allowKeys.push(...depkeys[iKey]);
             }
             allowKeys = ArrayUtil.difference(ArrayUtil.unique(allowKeys), required);
+        }
+
+        if (!fixAdditional && schema.additionalProperties === undefined) {
+            if (defaultAdditionalItems === false && requiredLen + allowKeys.length >= min) {
+                allowAdditional = defaultAdditionalItems;
+            }
         }
 
         const re = schema[AnalysisMarkName]![AnalysisMarkEnum.Object] = { min, max, required, requiredLen, allowKeys, allowAdditional, keyPatterns, allowPattern, depkeys, depSchemas };
